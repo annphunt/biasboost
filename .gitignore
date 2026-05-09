@@ -5,3 +5,9 @@ biasboost.db
 *.db-shm
 *.db-wal
 ecosystem.config.js
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+tsconfig.tsbuildinfo
+.claude/
