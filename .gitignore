@@ -1,0 +1,7 @@
+.next/
+node_modules/
+.env.local
+biasboost.db
+*.db-shm
+*.db-wal
+ecosystem.config.js

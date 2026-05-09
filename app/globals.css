@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --color-slate-950: #020617;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+}
