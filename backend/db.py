@@ -31,19 +31,51 @@ def init_db() -> None:
             except sqlite3.OperationalError:
                 pass  # column already exists
 
+        # Migration: add role to users
+        try:
+            db.execute("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'entrepreneur'")
+            db.commit()
+        except sqlite3.OperationalError:
+            pass  # column already exists
+
+        # Migration: add role column to default_questions (requires table recreation
+        # because we need to change the UNIQUE constraint)
+        dq_cols = [row[1] for row in db.execute("PRAGMA table_info(default_questions)").fetchall()]
+        if "role" not in dq_cols and dq_cols:  # table exists but lacks role column
+            db.executescript("""
+                CREATE TABLE default_questions_new (
+                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    role            TEXT    NOT NULL DEFAULT 'entrepreneur',
+                    bias            TEXT    NOT NULL,
+                    question_number INTEGER NOT NULL,
+                    question_text   TEXT    NOT NULL,
+                    options         TEXT    NOT NULL,
+                    scoring         TEXT    NOT NULL,
+                    UNIQUE(role, bias, question_number)
+                );
+                INSERT INTO default_questions_new
+                    (role, bias, question_number, question_text, options, scoring)
+                SELECT 'entrepreneur', bias, question_number, question_text, options, scoring
+                FROM default_questions;
+                DROP TABLE default_questions;
+                ALTER TABLE default_questions_new RENAME TO default_questions;
+            """)
+
         db.executescript("""
             CREATE TABLE IF NOT EXISTS default_questions (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                role            TEXT    NOT NULL DEFAULT 'entrepreneur',
                 bias            TEXT    NOT NULL,
                 question_number INTEGER NOT NULL,
                 question_text   TEXT    NOT NULL,
                 options         TEXT    NOT NULL,
                 scoring         TEXT    NOT NULL,
-                UNIQUE(bias, question_number)
+                UNIQUE(role, bias, question_number)
             );
 
             CREATE TABLE IF NOT EXISTS users (
-                user_id INTEGER PRIMARY KEY
+                user_id INTEGER PRIMARY KEY,
+                role    TEXT NOT NULL DEFAULT 'entrepreneur'
             );
 
             CREATE TABLE IF NOT EXISTS bias_attempts (

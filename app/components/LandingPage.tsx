@@ -13,6 +13,7 @@ interface Props {
 export default function LandingPage({ showCarousel: initialShow }: Props) {
   const [showCarousel, setShowCarousel] = useState(initialShow);
   const [userId, setUserId] = useState("");
+  const [role, setRole] = useState<"entrepreneur" | "trader">("entrepreneur");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
       const res = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: id }),
+        body: JSON.stringify({ userId: id, role }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -83,6 +84,40 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
             </h1>
             <p className="text-slate-500 text-lg leading-relaxed max-w-md">
               Simply choose a User ID to start. I&apos;ll be adding email to this soon.
+            </p>
+          </div>
+
+          {/* Role selector */}
+          <div className="max-w-sm space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
+              I am a…
+            </p>
+            <div className="flex rounded-xl border border-slate-200 overflow-hidden">
+              <button
+                onClick={() => setRole("entrepreneur")}
+                className={`flex-1 py-3 text-sm font-medium transition-colors ${
+                  role === "entrepreneur"
+                    ? "bg-teal-600 text-white"
+                    : "bg-white text-slate-500 hover:bg-slate-50"
+                }`}
+              >
+                Entrepreneur
+              </button>
+              <button
+                onClick={() => setRole("trader")}
+                className={`flex-1 py-3 text-sm font-medium transition-colors border-l border-slate-200 ${
+                  role === "trader"
+                    ? "bg-teal-600 text-white"
+                    : "bg-white text-slate-500 hover:bg-slate-50"
+                }`}
+              >
+                Trader
+              </button>
+            </div>
+            <p className="text-xs text-slate-400">
+              {role === "entrepreneur"
+                ? "Questions are set in a business and leadership context."
+                : "Questions are set in an FX, CFD, and stock trading context."}
             </p>
           </div>
 

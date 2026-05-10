@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from db import get_db, init_db
-from prompts import BIASES, BIAS_NAMES, build_single_bias_analysis_prompt, build_single_bias_prompt, build_summary_analysis_prompt
+from prompts import BIASES, BIAS_NAMES, TRADER_QUESTIONS, build_single_bias_analysis_prompt, build_single_bias_prompt, build_summary_analysis_prompt
 
 # Load .env.local when running locally — resolve relative to this file, not cwd
 _ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local")
@@ -55,20 +55,29 @@ def compute_level(score: int) -> str:
 
 # ── POST /api/users ──────────────────────────────────────────────────────────
 
+VALID_ROLES = {"entrepreneur", "trader"}
+
+
 @app.post("/api/users", status_code=201)
 def create_user(body: dict[str, Any]):
     user_id = body.get("userId")
+    role = body.get("role", "entrepreneur")
     if not isinstance(user_id, int) or user_id <= 0:
         raise HTTPException(status_code=400, detail="userId must be a positive integer")
+    if role not in VALID_ROLES:
+        raise HTTPException(status_code=400, detail="role must be 'entrepreneur' or 'trader'")
 
     db = get_db()
     try:
-        db.execute("INSERT OR IGNORE INTO users (user_id) VALUES (?)", (user_id,))
+        db.execute(
+            "INSERT INTO users (user_id, role) VALUES (?, ?) ON CONFLICT(user_id) DO NOTHING",
+            (user_id, role),
+        )
         db.commit()
     finally:
         db.close()
 
-    return {"userId": user_id}
+    return {"userId": user_id, "role": role}
 
 
 # ── GET /api/users/{userId}/biases ───────────────────────────────────────────
@@ -120,9 +129,10 @@ def create_attempt(body: dict[str, Any]):
 
     db = get_db()
     try:
-        user = db.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,)).fetchone()
+        user = db.execute("SELECT user_id, role FROM users WHERE user_id = ?", (user_id,)).fetchone()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
+        user_role = user["role"] or "entrepreneur"
 
         existing = db.execute(
             "SELECT completed_at FROM bias_attempts WHERE user_id = ? AND bias = ?",
@@ -146,10 +156,10 @@ def create_attempt(body: dict[str, Any]):
         db.commit()
         attempt_id = cur.lastrowid
 
-        # Use default questions if seeded
+        # Use default questions if seeded for this role
         defaults = db.execute(
-            "SELECT * FROM default_questions WHERE bias = ? ORDER BY question_number",
-            (bias,),
+            "SELECT * FROM default_questions WHERE role = ? AND bias = ? ORDER BY question_number",
+            (user_role, bias),
         ).fetchall()
 
         if len(defaults) == 4:
@@ -170,7 +180,7 @@ def create_attempt(body: dict[str, Any]):
         message = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=2000,
-            messages=[{"role": "user", "content": build_single_bias_prompt(bias)}],
+            messages=[{"role": "user", "content": build_single_bias_prompt(bias, role=user_role)}],
         )
         raw = message.content[0].text if message.content else ""
         match = re.search(r"\[[\s\S]*\]", raw)
@@ -457,6 +467,10 @@ def get_analysis_detail(attempt_id: int):
 @app.post("/api/admin/seed-questions")
 def seed_questions(request: Request, body: dict[str, Any] = {}):
     target_bias = body.get("bias")
+    role = body.get("role", "entrepreneur")
+
+    if role not in VALID_ROLES:
+        raise HTTPException(status_code=400, detail="role must be 'entrepreneur' or 'trader'")
 
     if target_bias:
         biases_to_seed = [b for b in BIASES if b["name"] == target_bias]
@@ -465,9 +479,42 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
     else:
         biases_to_seed = list(BIASES)
 
-    client = get_anthropic()
     seeded = []
     failed = []
+
+    # Trader questions come from hardcoded data — no Claude needed
+    if role == "trader":
+        db = get_db()
+        try:
+            for bias_obj in biases_to_seed:
+                name = bias_obj["name"]
+                questions = TRADER_QUESTIONS.get(name)
+                if not questions:
+                    failed.append({"bias": name, "error": "No trader questions defined"})
+                    continue
+                try:
+                    for i, q in enumerate(questions):
+                        db.execute(
+                            """INSERT OR REPLACE INTO default_questions
+                               (role, bias, question_number, question_text, options, scoring)
+                               VALUES (?, ?, ?, ?, ?, ?)""",
+                            (role, name, i + 1, q["question"], json.dumps(q["options"]), json.dumps(q["scoring"])),
+                        )
+                    db.commit()
+                    seeded.append(name)
+                except Exception as e:
+                    failed.append({"bias": name, "error": str(e)})
+        finally:
+            db.close()
+
+        all_failed = len(failed) == len(biases_to_seed)
+        return JSONResponse(
+            content={"seeded": seeded, "failed": failed},
+            status_code=500 if all_failed else 200,
+        )
+
+    # Entrepreneur questions generated via Claude
+    client = get_anthropic()
 
     for bias_obj in biases_to_seed:
         name = bias_obj["name"]
@@ -475,7 +522,7 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
             message = client.messages.create(
                 model="claude-sonnet-4-6",
                 max_tokens=2000,
-                messages=[{"role": "user", "content": build_single_bias_prompt(name)}],
+                messages=[{"role": "user", "content": build_single_bias_prompt(name, role=role)}],
             )
             raw = message.content[0].text if message.content else ""
             match = re.search(r"\[[\s\S]*\]", raw)
@@ -491,9 +538,9 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
                 for i, q in enumerate(questions):
                     db.execute(
                         """INSERT OR REPLACE INTO default_questions
-                           (bias, question_number, question_text, options, scoring)
-                           VALUES (?, ?, ?, ?, ?)""",
-                        (name, i + 1, q["question"], json.dumps(q["options"]), json.dumps(q["scoring"])),
+                           (role, bias, question_number, question_text, options, scoring)
+                           VALUES (?, ?, ?, ?, ?, ?)""",
+                        (role, name, i + 1, q["question"], json.dumps(q["options"]), json.dumps(q["scoring"])),
                     )
                 db.commit()
             finally:
