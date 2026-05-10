@@ -15,8 +15,9 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from db import get_db, init_db
 from prompts import BIASES, BIAS_NAMES, build_single_bias_analysis_prompt, build_single_bias_prompt, build_summary_analysis_prompt
 
-# Load .env.local when running locally
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env.local"))
+# Load .env.local when running locally — resolve relative to this file, not cwd
+_ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local")
+load_dotenv(dotenv_path=_ENV_PATH)
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
@@ -39,6 +40,9 @@ app.add_middleware(
 
 def get_anthropic() -> anthropic.Anthropic:
     return anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
+
+BIAS_DEFINITIONS: dict[str, str] = {b["name"]: b["definition"] for b in BIASES}
 
 
 def compute_level(score: int) -> str:
@@ -327,6 +331,7 @@ async def get_analysis(attempt_id: int):
                     "totalScore": total_score,
                     "level": attempt["level"] or level,
                     "bias": attempt["bias"],
+                    "definition": BIAS_DEFINITIONS.get(attempt["bias"], ""),
                     "summary": attempt["analysis_summary"],
                     "hasDetail": attempt["analysis"] is not None,
                 }
@@ -341,7 +346,12 @@ async def get_analysis(attempt_id: int):
     client = get_anthropic()
 
     async def generate():
-        meta = {"totalScore": total_score, "level": level, "bias": attempt_dict["bias"]}
+        meta = {
+            "totalScore": total_score,
+            "level": level,
+            "bias": attempt_dict["bias"],
+            "definition": BIAS_DEFINITIONS.get(attempt_dict["bias"], ""),
+        }
         yield f"__META__{json.dumps(meta)}\n"
 
         full_text = ""

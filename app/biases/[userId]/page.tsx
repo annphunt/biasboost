@@ -187,7 +187,7 @@ export default function BiasMenuPage() {
                       "w-24 h-24 rounded-2xl flex items-center justify-center transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden",
                       bgClass,
                       bias.completed
-                        ? "hover:opacity-90 focus:ring-teal-400"
+                        ? "hover:opacity-90 hover:ring-2 hover:ring-offset-2 hover:ring-slate-300 focus:ring-teal-400"
                         : isDisabled
                         ? "opacity-40 cursor-not-allowed"
                         : "hover:border-slate-300 hover:shadow-md cursor-pointer focus:ring-slate-300",
@@ -212,14 +212,26 @@ export default function BiasMenuPage() {
                   </button>
 
                   {bias.completed && (
-                    <span className="text-xs text-slate-600 font-medium text-center leading-tight max-w-[96px]">
-                      {bias.name}
-                    </span>
+                    <div className="flex flex-col items-center gap-0.5 max-w-[96px]">
+                      <span className="text-xs text-slate-600 font-medium text-center leading-tight">
+                        {bias.name}
+                      </span>
+                      <span className="text-[10px] text-slate-400 text-center">
+                        Tap to revisit →
+                      </span>
+                    </div>
                   )}
                 </div>
               );
             })}
           </div>
+        )}
+
+        {/* Contextual hint */}
+        {completedCount > 0 && !allComplete && (
+          <p className="text-xs text-slate-400 text-center">
+            Tap any coloured module to revisit your analysis.
+          </p>
         )}
 
         {/* All-complete banner */}

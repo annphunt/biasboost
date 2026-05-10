@@ -90,8 +90,9 @@ export default function QuizPage() {
     setSubmitting(true);
     setError(null);
     try {
-      // All answers already saved — just navigate back to bias menu
-      router.push(`/biases/${userId}`);
+      // All answers already saved — go straight to analysis
+      const biasName = encodeURIComponent(data.attempt.bias);
+      router.push(`/analysis/${attemptId}?userId=${userId}&bias=${biasName}`);
     } catch (err) {
       setError(String(err));
       setSubmitting(false);
@@ -114,6 +115,13 @@ export default function QuizPage() {
 
   const currentQ = data.questions[currentIndex];
   const totalQuestions = data.questions.length;
+
+  // Guard: if attempt is complete or questions not yet available, send to analysis
+  if (!currentQ || totalQuestions === 0) {
+    router.replace(`/analysis/${attemptId}?userId=${userId}`);
+    return null;
+  }
+
   const answeredCount = Object.keys(localAnswers).length;
   const allAnswered = answeredCount === totalQuestions;
   const progress = (answeredCount / totalQuestions) * 100;
@@ -167,7 +175,7 @@ export default function QuizPage() {
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={!allAnswered || submitting}
+              disabled={!allAnswered || submitting || saving}
               className="px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
             >
               {submitting ? "Submitting…" : "Submit"}

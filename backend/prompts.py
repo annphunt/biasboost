@@ -1,16 +1,56 @@
 from typing import Literal
 
 BIASES = [
-    {"name": "Confirmation Bias",     "description": "Favouring information that confirms what you already believe."},
-    {"name": "Anchoring Bias",         "description": "Over-relying on the first piece of information you encounter."},
-    {"name": "Availability Heuristic", "description": "Overweighting examples that come easily to mind."},
-    {"name": "Overconfidence Bias",    "description": "Overestimating the accuracy of your own judgements."},
-    {"name": "Loss Aversion",          "description": "Feeling losses more acutely than equivalent gains."},
-    {"name": "Sunk Cost Fallacy",      "description": "Continuing a course of action because of past investment, not future value."},
-    {"name": "Halo Effect",            "description": "Letting one positive trait colour your overall judgement of a person or thing."},
-    {"name": "Framing Effect",         "description": "Being swayed by how information is presented rather than what it says."},
-    {"name": "Status Quo Bias",        "description": "Preferring the current state of affairs and resisting change."},
-    {"name": "Dunning-Kruger Effect",  "description": "Overestimating your competence in areas where your knowledge is limited."},
+    {
+        "name": "Confirmation Bias",
+        "description": "Favouring information that confirms what you already believe.",
+        "definition": "Confirmation bias is the tendency to search for, favour, and recall information that supports your existing beliefs — while unconsciously discounting evidence that challenges them. It's not stubbornness; it's an automatic mental shortcut that affects even the most analytical thinkers. The result is that your views feel increasingly well-supported over time, even when the underlying evidence is mixed.",
+    },
+    {
+        "name": "Anchoring Bias",
+        "description": "Over-relying on the first piece of information you encounter.",
+        "definition": "Anchoring bias is the tendency to rely too heavily on the first piece of information you receive when making a decision. That initial number, estimate, or framing — the anchor — shapes all your subsequent thinking, even when it's arbitrary or shouldn't be relevant. It's why the opening offer in a negotiation matters so much, and why first impressions are so hard to revise.",
+    },
+    {
+        "name": "Availability Heuristic",
+        "description": "Overweighting examples that come easily to mind.",
+        "definition": "The availability heuristic is the tendency to judge how likely or common something is based on how easily an example comes to mind. Because recent, dramatic, or emotionally vivid events are easier to recall, we overestimate their frequency and probability. This is why people overestimate the risk of plane crashes and underestimate everyday hazards — the dramatic examples are simply more memorable.",
+    },
+    {
+        "name": "Overconfidence Bias",
+        "description": "Overestimating the accuracy of your own judgements.",
+        "definition": "Overconfidence bias is the tendency to overestimate the accuracy of your own knowledge, forecasts, and abilities. Most people — including domain experts — believe their judgements are more reliable than they actually are. It manifests as overly narrow confidence intervals, underestimated timelines, and a tendency to act on conviction before the evidence warrants it.",
+    },
+    {
+        "name": "Loss Aversion",
+        "description": "Feeling losses more acutely than equivalent gains.",
+        "definition": "Loss aversion is the tendency to feel the pain of losing something roughly twice as intensely as the pleasure of gaining something equivalent. It's not irrational to dislike losses — but when losses loom disproportionately large, they distort decisions: we hold onto failing positions too long, avoid necessary risks, and accept worse expected outcomes just to avoid the possibility of loss.",
+    },
+    {
+        "name": "Sunk Cost Fallacy",
+        "description": "Continuing a course of action because of past investment, not future value.",
+        "definition": "The sunk cost fallacy is the tendency to continue investing time, money, or effort into something because of what has already been spent — rather than based on its future prospects. Past costs are unrecoverable regardless of what you do next. Yet they continue to pull decisions forward, turning what should be a forward-looking question into an emotional defence of past choices.",
+    },
+    {
+        "name": "Halo Effect",
+        "description": "Letting one positive trait colour your overall judgement of a person or thing.",
+        "definition": "The halo effect is the tendency to let one positive impression of a person, brand, or idea colour your overall judgement of them. Attractiveness, confidence, or early success in one domain leads us to assume competence and virtue in unrelated areas. It's why charismatic leaders often escape scrutiny, and why strong first impressions are so difficult to revise even with contradictory evidence.",
+    },
+    {
+        "name": "Framing Effect",
+        "description": "Being swayed by how information is presented rather than what it says.",
+        "definition": "The framing effect is the tendency to respond differently to the same information depending on how it's presented. A 90% survival rate and a 10% mortality rate are identical facts — but they don't feel the same. Whether data is framed as a gain or a loss, a percentage or a raw number, a risk or an opportunity, it meaningfully shifts the decisions that follow.",
+    },
+    {
+        "name": "Status Quo Bias",
+        "description": "Preferring the current state of affairs and resisting change.",
+        "definition": "Status quo bias is a preference for the current state of affairs, leading people to resist change even when an alternative would be objectively better. The default option carries disproportionate weight simply because it's familiar and because any change introduces perceived risk. It's why organisations persist with outdated processes, and why 'do nothing' is so often the implicit winner in decisions.",
+    },
+    {
+        "name": "Dunning-Kruger Effect",
+        "description": "Overestimating your competence in areas where your knowledge is limited.",
+        "definition": "The Dunning-Kruger effect describes how people with limited knowledge in a domain tend to overestimate their competence — while genuine experts often underestimate theirs. The core problem is metacognitive: the less you know, the less equipped you are to recognise what you don't know. It's why novices act with great confidence and why mastery tends to produce more caution, not less.",
+    },
 ]
 
 BIAS_NAMES = [b["name"] for b in BIASES]
@@ -47,11 +87,9 @@ Output ONLY a valid JSON array of exactly 4 objects — no markdown, no explanat
 def build_summary_analysis_prompt(bias: str, total_score: int, level: str) -> str:
     return f"""You are a behavioural psychologist. A professional has just completed a 4-question assessment and scored {total_score} out of 12 on {bias}, placing them in the {level} range (Low = 0–4, Medium = 5–8, High = 9–12).
 
-Write exactly two short paragraphs — no headers, no bullets, plain English:
+Write exactly one short paragraph — no headers, no bullets, plain English:
 
-Paragraph 1: What is {bias}? Explain it in 1–2 sentences as if speaking to a smart professional who has never heard the term. No jargon.
-
-Paragraph 2: What does a {level} score mean in practice? Be specific about how this level of {bias} shows up in the decisions and behaviour of a senior professional. Under 3 sentences.
+What does a {level} score mean in practice for this person? Be specific about how this level of {bias} shows up in the decisions and behaviour of a senior professional. Under 3 sentences. Speak directly to the reader (use "you" and "your").
 
 No headers. No bullets. Plain prose only."""
 
