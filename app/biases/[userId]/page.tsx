@@ -90,7 +90,6 @@ export default function BiasMenuPage() {
 
   const completedCount = biases.filter((b) => b.completed).length;
   const pct = biases.length === 0 ? 0 : Math.round((completedCount / 10) * 100);
-  const firstIncomplete = biases.find((b) => !b.completed) ?? null;
   const allComplete = biases.length === 10 && biases.every((b) => b.completed);
 
   return (
@@ -98,10 +97,10 @@ export default function BiasMenuPage() {
       {/* Top bar */}
       <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
             <span className="inline-block w-1.5 h-5 bg-teal-500 rounded-sm" />
             <span className="text-sm font-semibold text-slate-800">BiasBoost</span>
-          </div>
+          </a>
           <span className="text-xs text-slate-400">User #{userId}</span>
         </div>
       </div>
@@ -109,7 +108,7 @@ export default function BiasMenuPage() {
       <div className="max-w-3xl mx-auto w-full px-4 py-12 space-y-8">
 
         {/* Progress header */}
-        <div className="space-y-4">
+        <div className="space-y-2">
           <div className="flex items-end gap-3">
             <span className="text-6xl font-bold text-slate-800 leading-none">{pct}%</span>
             <span className="text-slate-400 text-sm mb-1 leading-snug">
@@ -117,30 +116,12 @@ export default function BiasMenuPage() {
             </span>
           </div>
 
-          {biases.length > 0 && firstIncomplete && (
-            <button
-              onClick={() => startBias(firstIncomplete.name)}
-              disabled={!!loadingBias}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
-            >
-              {loadingBias === firstIncomplete.name ? (
-                <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                  </svg>
-                  Starting…
-                </>
-              ) : pct === 0 ? "Get started" : "Test a new bias"}
-            </button>
+          {biases.length > 0 && completedCount === 0 && (
+            <p className="text-slate-400 text-sm">
+              Select any icon below to start your first assessment.
+            </p>
           )}
         </div>
-
-        {/* Intro text */}
-        <p className="text-slate-500 text-sm leading-relaxed max-w-md">
-          There are 10 cognitive biases to examine. Complete each module to reveal your
-          bias profile — the topic stays hidden until you finish.
-        </p>
 
         {/* Error banner */}
         {error && (
@@ -151,10 +132,10 @@ export default function BiasMenuPage() {
 
         {/* Icon grid skeleton */}
         {biases.length === 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+          <div className="grid grid-cols-5 gap-3 sm:gap-5">
             {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <div className="w-24 h-24 rounded-2xl bg-slate-100 border border-slate-200 animate-pulse" />
+              <div key={i} className="flex flex-col items-center gap-1.5">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl bg-slate-100 border border-slate-200 animate-pulse" />
               </div>
             ))}
           </div>
@@ -162,7 +143,7 @@ export default function BiasMenuPage() {
 
         {/* Icon grid */}
         {biases.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+          <div className="grid grid-cols-5 gap-3 sm:gap-5">
             {biases.map((bias) => {
               const isLoading = loadingBias === bias.name;
               const isDisabled = !!loadingBias && !bias.completed;
@@ -172,7 +153,7 @@ export default function BiasMenuPage() {
               const iconSrc = BIAS_ICON[bias.name];
 
               return (
-                <div key={bias.name} className="flex flex-col items-center gap-2">
+                <div key={bias.name} className="flex flex-col items-center gap-1.5">
                   <button
                     onClick={() => {
                       if (bias.completed && bias.attemptId !== null) {
@@ -184,7 +165,7 @@ export default function BiasMenuPage() {
                     disabled={isDisabled}
                     aria-label={bias.completed ? `View ${bias.name} analysis` : `Start module`}
                     className={[
-                      "w-24 h-24 rounded-2xl flex items-center justify-center transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden",
+                      "w-14 h-14 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden",
                       bgClass,
                       bias.completed
                         ? "hover:opacity-90 hover:ring-2 hover:ring-offset-2 hover:ring-slate-300 focus:ring-teal-400"
@@ -194,7 +175,7 @@ export default function BiasMenuPage() {
                     ].join(" ")}
                   >
                     {isLoading ? (
-                      <svg className="animate-spin w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin w-4 h-4 sm:w-5 sm:h-5 text-slate-400" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                       </svg>
@@ -202,9 +183,9 @@ export default function BiasMenuPage() {
                       <Image
                         src={iconSrc}
                         alt={bias.name}
-                        width={96}
-                        height={96}
-                        className="w-full h-full object-contain p-2"
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-contain p-1.5"
                       />
                     ) : (
                       <PlaceholderIcon />
@@ -212,14 +193,9 @@ export default function BiasMenuPage() {
                   </button>
 
                   {bias.completed && (
-                    <div className="flex flex-col items-center gap-0.5 max-w-[96px]">
-                      <span className="text-xs text-slate-600 font-medium text-center leading-tight">
-                        {bias.name}
-                      </span>
-                      <span className="text-[10px] text-slate-400 text-center">
-                        Tap to revisit →
-                      </span>
-                    </div>
+                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium text-center leading-tight max-w-[56px] sm:max-w-[80px]">
+                      {bias.name}
+                    </span>
                   )}
                 </div>
               );
@@ -230,7 +206,7 @@ export default function BiasMenuPage() {
         {/* Contextual hint */}
         {completedCount > 0 && !allComplete && (
           <p className="text-xs text-slate-400 text-center">
-            Tap any coloured module to revisit your analysis.
+            Select any grey icon to test a new bias.
           </p>
         )}
 
