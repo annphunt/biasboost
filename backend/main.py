@@ -70,7 +70,7 @@ def create_user(body: dict[str, Any]):
     db = get_db()
     try:
         db.execute(
-            "INSERT INTO users (user_id, role) VALUES (?, ?) ON CONFLICT(user_id) DO NOTHING",
+            "INSERT INTO users (user_id, role) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET role = excluded.role",
             (user_id, role),
         )
         db.commit()
