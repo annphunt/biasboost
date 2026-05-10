@@ -34,11 +34,6 @@ const INTRO_SLIDES = [
     ],
     footer: "There are no perfect results. In fact, the most useful outcomes often come from discovering patterns you didn't expect.",
   },
-  {
-    body: [
-      "You'll be given a detailed understanding of your biases, as well as an understanding of how it affects your decision making.",
-    ],
-  },
 ];
 
 interface Props {
