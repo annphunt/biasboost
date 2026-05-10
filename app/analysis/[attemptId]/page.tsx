@@ -31,6 +31,16 @@ function levelFromScore(score: number): Level {
   return "High";
 }
 
+interface ReviewQuestion {
+  id: number;
+  number: number;
+  question: string;
+  options: Record<string, string>;
+  answer_given: string | null;
+}
+
+const OPTION_LABELS = ["A", "B", "C", "D"] as const;
+
 type StepState = "pending" | "loading" | "done";
 
 function StepIndicator({ steps }: { steps: { label: string; state: StepState }[] }) {
@@ -116,6 +126,9 @@ export default function AnalysisPage() {
   const [detail, setDetail] = useState<string | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showReview, setShowReview] = useState(false);
+  const [reviewQuestions, setReviewQuestions] = useState<ReviewQuestion[]>([]);
+  const [loadingReview, setLoadingReview] = useState(false);
 
   // Animated score counter — counts from 0 to final score over ~1.5s
   useEffect(() => {
@@ -242,6 +255,19 @@ export default function AnalysisPage() {
   }, [attemptId]);
 
   const biasName = biasFromUrl || meta?.bias || "";
+
+  async function handleShowReview() {
+    if (reviewQuestions.length > 0) { setShowReview(true); return; }
+    setLoadingReview(true);
+    try {
+      const res = await fetch(`/api/attempts/${attemptId}`);
+      const data = await res.json();
+      setReviewQuestions(data.questions ?? []);
+      setShowReview(true);
+    } finally {
+      setLoadingReview(false);
+    }
+  }
 
   return (
     <main className="min-h-screen flex flex-col bg-white">
@@ -379,6 +405,73 @@ export default function AnalysisPage() {
               In your responses
             </p>
             {renderText(detail)}
+          </div>
+        )}
+
+        {/* Review answers */}
+        {summaryDone && (
+          <div className="pt-2 pb-8">
+            {!showReview ? (
+              <button
+                onClick={handleShowReview}
+                disabled={loadingReview}
+                className="w-full py-3 rounded-xl border border-slate-200 text-slate-500 text-sm font-medium hover:border-slate-300 hover:bg-slate-50 transition-colors disabled:opacity-50"
+              >
+                {loadingReview ? "Loading…" : "Review my answers"}
+              </button>
+            ) : (
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                    Your answers
+                  </p>
+                  <button
+                    onClick={() => setShowReview(false)}
+                    className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    Hide ↑
+                  </button>
+                </div>
+                {reviewQuestions.map((q) => (
+                  <div key={q.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+                    <p className="text-sm font-medium text-slate-800 leading-relaxed">
+                      <span className="text-slate-400 mr-2">Q{q.number}.</span>
+                      {q.question}
+                    </p>
+                    <div className="space-y-2">
+                      {OPTION_LABELS.map((label) => {
+                        const text = q.options[label];
+                        if (!text) return null;
+                        const isSelected = q.answer_given === label;
+                        return (
+                          <div
+                            key={label}
+                            className={`flex gap-3 items-start px-4 py-3 rounded-xl border ${
+                              isSelected
+                                ? "border-teal-400 bg-teal-50"
+                                : "border-slate-100 bg-slate-50"
+                            }`}
+                          >
+                            <span className={`flex-shrink-0 w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold mt-0.5 ${
+                              isSelected
+                                ? "border-teal-500 bg-teal-500 text-white"
+                                : "border-slate-200 text-slate-300"
+                            }`}>
+                              {label}
+                            </span>
+                            <span className={`text-sm leading-relaxed ${
+                              isSelected ? "text-slate-800 font-medium" : "text-slate-400"
+                            }`}>
+                              {text}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
