@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 interface Question {
   id: number;
@@ -133,8 +134,9 @@ export default function QuizPage() {
       <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="inline-block w-1.5 h-5 bg-teal-500 rounded-sm" />
-            <span className="text-sm font-semibold text-slate-800">BiasBoost</span>
+            <a href="/" className="flex items-center hover:opacity-70 transition-opacity">
+              <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
+            </a>
             <span className="ml-2 text-xs text-slate-400">Module</span>
           </div>
           <span className="text-xs text-slate-400">User #{userId}</span>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import Image from "next/image";
 
 type Level = "Low" | "Medium" | "High";
 
@@ -254,8 +255,9 @@ export default function AnalysisPage() {
             >
               ← Back
             </button>
-            <span className="inline-block w-1.5 h-5 bg-teal-500 rounded-sm" />
-            <span className="text-sm font-semibold text-slate-800">BiasBoost</span>
+            <a href="/" className="flex items-center hover:opacity-70 transition-opacity">
+              <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
+            </a>
             <span className="ml-2 text-xs text-slate-400">Analysis</span>
           </div>
           <span className="text-xs text-slate-400">User #{userId}</span>

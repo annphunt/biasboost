@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import IntroCarousel from "./IntroCarousel";
 import { markIntroSeen } from "../actions";
 
@@ -60,9 +61,8 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
         {/* Top bar */}
         <div className="border-b border-slate-200 bg-white">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="inline-block w-1.5 h-5 bg-teal-500 rounded-sm" />
-              <span className="text-sm font-semibold text-slate-800">BiasBoost</span>
+            <div className="flex items-center">
+              <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
             </div>
             {!initialShow && !showCarousel && (
               <button

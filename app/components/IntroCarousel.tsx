@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const INTRO_KEY = "biasboost_intro_seen";
 
@@ -56,9 +57,8 @@ export default function IntroCarousel({ onDone, onSkip, hasSeenBefore }: Props) 
       {/* Top bar */}
       <div className="border-b border-slate-200">
         <div className="max-w-xl mx-auto px-8 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-1.5 h-5 bg-teal-500 rounded-sm" />
-            <span className="text-sm font-semibold text-slate-800">BiasBoost</span>
+          <div className="flex items-center">
+            <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
           </div>
           {hasSeenBefore && (
             <button
