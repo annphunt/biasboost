@@ -223,14 +223,30 @@ export default function AnalysisPage() {
             </div>
 
             {/* Summary */}
-            {summary && (
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
-                {renderText(summary)}
-                {!summaryDone && (
-                  <span className="inline-block w-1 h-4 bg-teal-500 animate-pulse rounded-sm ml-1" />
-                )}
-              </div>
-            )}
+            {summary && (() => {
+              const paragraphs = summary.split(/\n\n+/).filter((p) => p.trim());
+              const TITLES = [
+                `${meta.bias} — Explained`,
+                "What does my score mean for me?",
+              ];
+              return (
+                <div className="space-y-6">
+                  {paragraphs.map((para, i) => (
+                    <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-2">
+                      {TITLES[i] && (
+                        <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
+                          {TITLES[i]}
+                        </p>
+                      )}
+                      {renderText(para)}
+                      {i === paragraphs.length - 1 && !summaryDone && (
+                        <span className="inline-block w-1 h-4 bg-teal-500 animate-pulse rounded-sm ml-1" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* More info */}
             {summaryDone && !detail && (
