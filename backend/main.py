@@ -17,7 +17,7 @@ from prompts import BIASES, BIAS_NAMES, build_single_bias_analysis_prompt, build
 
 # Load .env.local when running locally — resolve relative to this file, not cwd
 _ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local")
-load_dotenv(dotenv_path=_ENV_PATH)
+load_dotenv(dotenv_path=_ENV_PATH, override=True)
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
