@@ -156,7 +156,7 @@ export default function BiasMenuPage() {
                   <button
                     onClick={() => {
                       if (bias.completed && bias.attemptId !== null) {
-                        router.push(`/analysis/${bias.attemptId}?userId=${userId}`);
+                        router.push(`/analysis/${bias.attemptId}?userId=${userId}&bias=${encodeURIComponent(bias.name)}`);
                       } else {
                         startBias(bias.name);
                       }
