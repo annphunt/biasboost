@@ -10,10 +10,13 @@ interface Props {
   showCarousel: boolean;
 }
 
+type Tab = "register" | "login";
+
 export default function LandingPage({ showCarousel: initialShow }: Props) {
   const [showCarousel, setShowCarousel] = useState(initialShow);
-  const [userId, setUserId] = useState("");
-  const [role, setRole] = useState<"entrepreneur" | "trader">("entrepreneur");
+  const [tab, setTab] = useState<Tab>("register");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -23,27 +26,35 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
     setShowCarousel(false);
   }
 
-  async function handleContinue() {
-    const id = Number(userId);
-    if (!Number.isInteger(id) || id <= 0) {
-      setError("Please enter a positive whole number.");
-      return;
-    }
-    setLoading(true);
+  async function handleSubmit() {
     setError(null);
+    if (!email.includes("@")) { setError("Please enter a valid email."); return; }
+    if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
+    setLoading(true);
     try {
-      const res = await fetch("/api/users", {
+      if (tab === "register") {
+        const reg = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!reg.ok) {
+          const data = await reg.json().catch(() => ({}));
+          throw new Error(data.detail ?? "Registration failed");
+        }
+      }
+      const login = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: id, role }),
+        body: JSON.stringify({ email, password }),
       });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error ?? "Failed to register user");
+      if (!login.ok) {
+        const data = await login.json().catch(() => ({}));
+        throw new Error(data.detail ?? "Login failed");
       }
-      router.push(`/biases/${id}`);
+      router.push("/biases");
     } catch (err) {
-      setError(String(err));
+      setError(err instanceof Error ? err.message : String(err));
       setLoading(false);
     }
   }
@@ -77,71 +88,74 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
         </div>
 
         {/* Hero */}
-        <div className="max-w-5xl mx-auto w-full px-4 py-16 space-y-12">
+        <div className="max-w-5xl mx-auto w-full px-4 py-16 space-y-10">
           <div className="space-y-6">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 leading-tight">
               Welcome to BiasBoost.
             </h1>
             <p className="text-slate-500 text-lg leading-relaxed max-w-md">
-              Simply choose a User ID to start. I&apos;ll be adding email to this soon.
+              Create an account to save your progress across sessions.
             </p>
           </div>
 
-          {/* Role selector */}
-          <div className="max-w-sm space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
-              I am a…
-            </p>
+          <div className="max-w-sm space-y-6">
+            {/* Tabs */}
             <div className="flex rounded-xl border border-slate-200 overflow-hidden">
               <button
-                onClick={() => setRole("entrepreneur")}
+                onClick={() => { setTab("register"); setError(null); }}
                 className={`flex-1 py-3 text-sm font-medium transition-colors ${
-                  role === "entrepreneur"
+                  tab === "register"
                     ? "bg-teal-600 text-white"
                     : "bg-white text-slate-500 hover:bg-slate-50"
                 }`}
               >
-                Entrepreneur
+                Register
               </button>
               <button
-                onClick={() => setRole("trader")}
+                onClick={() => { setTab("login"); setError(null); }}
                 className={`flex-1 py-3 text-sm font-medium transition-colors border-l border-slate-200 ${
-                  role === "trader"
+                  tab === "login"
                     ? "bg-teal-600 text-white"
                     : "bg-white text-slate-500 hover:bg-slate-50"
                 }`}
               >
-                Trader
+                Sign in
               </button>
             </div>
-            <p className="text-xs text-slate-400">
-              {role === "entrepreneur"
-                ? "Questions are set in a business and leadership context."
-                : "Questions are set in an FX, CFD, and stock trading context."}
-            </p>
-          </div>
 
-          {/* User ID input */}
-          <div className="max-w-sm space-y-3">
-            <label
-              htmlFor="userId"
-              className="text-xs font-semibold uppercase tracking-widest text-teal-600"
-            >
-              Your User ID
-            </label>
-            <input
-              id="userId"
-              type="number"
-              min={1}
-              value={userId}
-              onChange={(e) => { setUserId(e.target.value); setError(null); }}
-              onKeyDown={(e) => e.key === "Enter" && handleContinue()}
-              placeholder="Enter any positive number e.g. 1, 2, 3"
-              className="w-full bg-white border border-slate-200 text-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400/40 focus:border-teal-500 transition-colors placeholder:text-slate-400"
-            />
-            <p className="text-xs text-slate-400">
-              This is how your progress is saved. Use the same number each time.
-            </p>
+            {/* Email */}
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-xs font-semibold uppercase tracking-widest text-teal-600">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(null); }}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                placeholder="you@example.com"
+                className="w-full bg-white border border-slate-200 text-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400/40 focus:border-teal-500 transition-colors placeholder:text-slate-400"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-xs font-semibold uppercase tracking-widest text-teal-600">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                autoComplete={tab === "register" ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setError(null); }}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                placeholder={tab === "register" ? "At least 8 characters" : "Your password"}
+                className="w-full bg-white border border-slate-200 text-slate-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400/40 focus:border-teal-500 transition-colors placeholder:text-slate-400"
+              />
+            </div>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg px-4 py-3 text-sm">
@@ -150,11 +164,11 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
             )}
 
             <button
-              onClick={handleContinue}
-              disabled={loading || !userId}
+              onClick={handleSubmit}
+              disabled={loading || !email || !password}
               className="w-full py-3 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm tracking-wide transition-colors"
             >
-              {loading ? "Loading…" : "Get started →"}
+              {loading ? (tab === "register" ? "Creating account…" : "Signing in…") : (tab === "register" ? "Create account →" : "Sign in →")}
             </button>
           </div>
         </div>

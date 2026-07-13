@@ -15,52 +15,22 @@ def get_db() -> sqlite3.Connection:
     db = sqlite3.connect(_db_path(), check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA journal_mode = WAL")
+    db.execute("PRAGMA foreign_keys = ON")
     return db
 
 
 def init_db() -> None:
-    """Create tables and run migrations. Called once at startup."""
+    """Create tables. Called once at startup.
+
+    Schema is auth-uuid-based: users.auth_user_id is a TEXT primary key
+    that matches regstack's user id. bias_attempts.user_id references it.
+    default_questions is independent of users.
+    """
     db = sqlite3.connect(_db_path(), check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA journal_mode = WAL")
+    db.execute("PRAGMA foreign_keys = ON")
     try:
-        # Migrations for databases that predate these columns
-        for col in ("analysis", "level", "analysis_summary"):
-            try:
-                db.execute(f"ALTER TABLE bias_attempts ADD COLUMN {col} TEXT")
-            except sqlite3.OperationalError:
-                pass  # column already exists
-
-        # Migration: add role to users
-        try:
-            db.execute("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'entrepreneur'")
-            db.commit()
-        except sqlite3.OperationalError:
-            pass  # column already exists
-
-        # Migration: add role column to default_questions (requires table recreation
-        # because we need to change the UNIQUE constraint)
-        dq_cols = [row[1] for row in db.execute("PRAGMA table_info(default_questions)").fetchall()]
-        if "role" not in dq_cols and dq_cols:  # table exists but lacks role column
-            db.executescript("""
-                CREATE TABLE default_questions_new (
-                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-                    role            TEXT    NOT NULL DEFAULT 'entrepreneur',
-                    bias            TEXT    NOT NULL,
-                    question_number INTEGER NOT NULL,
-                    question_text   TEXT    NOT NULL,
-                    options         TEXT    NOT NULL,
-                    scoring         TEXT    NOT NULL,
-                    UNIQUE(role, bias, question_number)
-                );
-                INSERT INTO default_questions_new
-                    (role, bias, question_number, question_text, options, scoring)
-                SELECT 'entrepreneur', bias, question_number, question_text, options, scoring
-                FROM default_questions;
-                DROP TABLE default_questions;
-                ALTER TABLE default_questions_new RENAME TO default_questions;
-            """)
-
         db.executescript("""
             CREATE TABLE IF NOT EXISTS default_questions (
                 id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,13 +44,13 @@ def init_db() -> None:
             );
 
             CREATE TABLE IF NOT EXISTS users (
-                user_id INTEGER PRIMARY KEY,
-                role    TEXT NOT NULL DEFAULT 'entrepreneur'
+                auth_user_id TEXT PRIMARY KEY,
+                role         TEXT NOT NULL DEFAULT 'entrepreneur'
             );
 
             CREATE TABLE IF NOT EXISTS bias_attempts (
                 id               INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id          INTEGER NOT NULL REFERENCES users(user_id),
+                user_id          TEXT    NOT NULL REFERENCES users(auth_user_id),
                 bias             TEXT    NOT NULL,
                 started_at       TEXT    NOT NULL DEFAULT (datetime('now')),
                 completed_at     TEXT,
@@ -104,5 +74,24 @@ def init_db() -> None:
             );
         """)
         db.commit()
+    finally:
+        db.close()
+
+
+def get_or_create_profile(auth_user_id: str, default_role: str = "entrepreneur") -> str:
+    """Ensure a profile row exists for this regstack user. Returns the role."""
+    db = get_db()
+    try:
+        row = db.execute(
+            "SELECT role FROM users WHERE auth_user_id = ?", (auth_user_id,)
+        ).fetchone()
+        if row is not None:
+            return row["role"]
+        db.execute(
+            "INSERT INTO users (auth_user_id, role) VALUES (?, ?)",
+            (auth_user_id, default_role),
+        )
+        db.commit()
+        return default_role
     finally:
         db.close()

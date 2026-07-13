@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
+import UserBadge from "../../components/UserBadge";
 
 interface Question {
   id: number;
@@ -13,7 +14,7 @@ interface Question {
 }
 
 interface AttemptData {
-  attempt: { id: number; userId: number; bias: string };
+  attempt: { id: number; userId: string; bias: string };
   questions: Question[];
   answeredCount: number;
   totalQuestions: number;
@@ -24,8 +25,6 @@ const OPTION_LABELS = ["A", "B", "C", "D"] as const;
 
 export default function QuizPage() {
   const { attemptId } = useParams<{ attemptId: string }>();
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
   const router = useRouter();
 
   const [data, setData] = useState<AttemptData | null>(null);
@@ -37,6 +36,7 @@ export default function QuizPage() {
 
   const fetchAttempt = useCallback(async () => {
     const res = await fetch(`/api/attempts/${attemptId}`);
+    if (res.status === 401) { router.push("/"); return; }
     if (!res.ok) return;
     const json: AttemptData = await res.json();
     setData(json);
@@ -91,9 +91,8 @@ export default function QuizPage() {
     setSubmitting(true);
     setError(null);
     try {
-      // All answers already saved — go straight to analysis
       const biasName = encodeURIComponent(data.attempt.bias);
-      router.push(`/analysis/${attemptId}?userId=${userId}&bias=${biasName}`);
+      router.push(`/analysis/${attemptId}?bias=${biasName}`);
     } catch (err) {
       setError(String(err));
       setSubmitting(false);
@@ -119,7 +118,7 @@ export default function QuizPage() {
 
   // Guard: if attempt is complete or questions not yet available, send to analysis
   if (!currentQ || totalQuestions === 0) {
-    router.replace(`/analysis/${attemptId}?userId=${userId}`);
+    router.replace(`/analysis/${attemptId}`);
     return null;
   }
 
@@ -139,7 +138,7 @@ export default function QuizPage() {
             </a>
             <span className="ml-2 text-xs text-slate-400">Module</span>
           </div>
-          <span className="text-xs text-slate-400">User #{userId}</span>
+          <UserBadge />
         </div>
         {/* Navigation row */}
         <div className="max-w-2xl mx-auto px-4 pb-3 flex items-center justify-between gap-3">

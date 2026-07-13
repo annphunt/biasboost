@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import UserBadge from "../components/UserBadge";
+import PersonaToggle from "../components/PersonaToggle";
 
 
 type Level = "Low" | "Medium" | "High";
@@ -37,11 +39,8 @@ interface BiasCard {
 function PlaceholderIcon() {
   return (
     <svg viewBox="0 0 96 96" fill="none" className="w-full h-full" aria-hidden="true">
-      {/* Outer ring */}
       <circle cx="48" cy="48" r="44" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="4 3" />
-      {/* Inner disc */}
       <circle cx="48" cy="48" r="32" fill="#f1f5f9" />
-      {/* Question mark stem */}
       <path
         d="M48 56v-2c0-3 1.5-5 4.5-7.5C55 44 56 42 56 39.5 56 35.4 52.4 32 48 32s-8 3.4-8 7.5"
         stroke="#94a3b8"
@@ -50,14 +49,12 @@ function PlaceholderIcon() {
         strokeLinejoin="round"
         fill="none"
       />
-      {/* Question mark dot */}
       <circle cx="48" cy="62" r="2.5" fill="#94a3b8" />
     </svg>
   );
 }
 
 export default function BiasMenuPage() {
-  const { userId } = useParams<{ userId: string }>();
   const router = useRouter();
 
   const [biases, setBiases] = useState<BiasCard[]>([]);
@@ -65,10 +62,13 @@ export default function BiasMenuPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/users/${userId}/biases`)
-      .then((r) => r.json())
-      .then((data) => setBiases(data.biases ?? []));
-  }, [userId]);
+    fetch(`/api/me/biases`)
+      .then((r) => {
+        if (r.status === 401) { router.push("/"); return null; }
+        return r.json();
+      })
+      .then((data) => data && setBiases(data.biases ?? []));
+  }, [router]);
 
   async function startBias(biasName: string) {
     setLoadingBias(biasName);
@@ -77,11 +77,11 @@ export default function BiasMenuPage() {
       const res = await fetch("/api/attempts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: Number(userId), bias: biasName }),
+        body: JSON.stringify({ bias: biasName }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to start");
-      router.push(`/quiz/${data.attemptId}?userId=${userId}`);
+      if (!res.ok) throw new Error(data.detail ?? "Failed to start");
+      router.push(`/quiz/${data.attemptId}`);
     } catch (err) {
       setError(String(err));
       setLoadingBias(null);
@@ -100,7 +100,10 @@ export default function BiasMenuPage() {
           <a href="/" className="flex items-center hover:opacity-70 transition-opacity">
             <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
           </a>
-          <span className="text-xs text-slate-400">User #{userId}</span>
+          <div className="flex items-center gap-3">
+            <PersonaToggle />
+            <UserBadge />
+          </div>
         </div>
       </div>
 
@@ -156,7 +159,7 @@ export default function BiasMenuPage() {
                   <button
                     onClick={() => {
                       if (bias.completed && bias.attemptId !== null) {
-                        router.push(`/analysis/${bias.attemptId}?userId=${userId}&bias=${encodeURIComponent(bias.name)}`);
+                        router.push(`/analysis/${bias.attemptId}?bias=${encodeURIComponent(bias.name)}`);
                       } else {
                         startBias(bias.name);
                       }

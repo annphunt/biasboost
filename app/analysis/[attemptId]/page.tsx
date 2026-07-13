@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import UserBadge from "../../components/UserBadge";
 
 type Level = "Low" | "Medium" | "High";
 
@@ -112,7 +113,6 @@ function renderText(text: string) {
 export default function AnalysisPage() {
   const { attemptId } = useParams<{ attemptId: string }>();
   const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
   const router = useRouter();
 
   // Bias name + definition from URL param — renders instantly, no API wait
@@ -276,7 +276,7 @@ export default function AnalysisPage() {
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => router.push(`/biases/${userId}`)}
+              onClick={() => router.push(`/biases`)}
               className="text-sm text-slate-500 hover:text-slate-700 transition-colors flex items-center gap-1 mr-3"
             >
               ← Back
@@ -286,7 +286,7 @@ export default function AnalysisPage() {
             </a>
             <span className="ml-2 text-xs text-slate-400">Analysis</span>
           </div>
-          <span className="text-xs text-slate-400">User #{userId}</span>
+          <UserBadge />
         </div>
       </div>
 

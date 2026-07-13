@@ -4,15 +4,20 @@ import os
 import re
 import sqlite3
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Any
 
 import anthropic
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
+from pydantic import BaseModel, EmailStr, Field
+from regstack import RegStack, RegStackConfig
+from regstack.auth.jwt import TokenError, is_payload_bulk_revoked
+from regstack.models.user import BaseUser
 
-from db import get_db, init_db
+from db import get_db, get_or_create_profile, init_db
 from prompts import BIASES, BIAS_NAMES, TRADER_QUESTIONS, build_single_bias_analysis_prompt, build_single_bias_prompt, build_summary_analysis_prompt
 
 # Load .env.local when running locally — resolve relative to this file, not cwd
@@ -20,12 +25,19 @@ _ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env
 load_dotenv(dotenv_path=_ENV_PATH, override=True)
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+SESSION_COOKIE = os.environ.get("BIASBOOST_SESSION_COOKIE", "bb_session")
+
+# Build regstack — reads REGSTACK_* env vars
+regstack_config = RegStackConfig.load()
+rs = RegStack(config=regstack_config)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    await rs.install_schema()
     yield
+    await rs.aclose()
 
 
 app = FastAPI(lifespan=lifespan)
@@ -33,9 +45,16 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount regstack's JSON router. Provides POST /register, POST /verify, etc.
+# We intentionally do NOT use its /login or /logout — those return bearer
+# tokens; we supply cookie-flavored equivalents below at /api/login,
+# /api/logout, and prefer our /api/me over its /account/me.
+app.include_router(rs.router, prefix=regstack_config.api_prefix)
 
 
 def get_anthropic() -> anthropic.Anthropic:
@@ -53,40 +72,149 @@ def compute_level(score: int) -> str:
     return "High"
 
 
-# ── POST /api/users ──────────────────────────────────────────────────────────
-
 VALID_ROLES = {"entrepreneur", "trader"}
 
 
-@app.post("/api/users", status_code=201)
-def create_user(body: dict[str, Any]):
-    user_id = body.get("userId")
-    role = body.get("role", "entrepreneur")
-    if not isinstance(user_id, int) or user_id <= 0:
-        raise HTTPException(status_code=400, detail="userId must be a positive integer")
-    if role not in VALID_ROLES:
-        raise HTTPException(status_code=400, detail="role must be 'entrepreneur' or 'trader'")
+# ── Auth: cookie-based session on top of regstack's bearer JWT ───────────────
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=1)
+
+
+def _set_session_cookie(response: Response, token: str, max_age: int) -> None:
+    response.set_cookie(
+        key=SESSION_COOKIE,
+        value=token,
+        max_age=max_age,
+        httponly=True,
+        secure=str(regstack_config.base_url).startswith("https"),
+        samesite="lax",
+        path="/",
+    )
+
+
+def _clear_session_cookie(response: Response) -> None:
+    response.delete_cookie(key=SESSION_COOKIE, path="/")
+
+
+@app.post("/api/login")
+async def login(payload: LoginRequest, response: Response):
+    decision = await rs.lockout.check(payload.email)
+    if decision.locked:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Too many failed attempts. Try again in {decision.retry_after_seconds} seconds.",
+        )
+
+    user = await rs.users.get_by_email(payload.email)
+    if user is None or user.id is None or user.hashed_password is None:
+        await rs.lockout.record_failure(payload.email)
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+    if not rs.password_hasher.verify(payload.password, user.hashed_password):
+        await rs.lockout.record_failure(payload.email)
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Account is disabled.")
+    if rs.config.require_verification and not user.is_verified:
+        raise HTTPException(status_code=403, detail="Email address has not been verified.")
+
+    token, token_payload = rs.jwt.encode(user.id)
+    await rs.users.set_last_login(user.id, token_payload.iat)
+    await rs.lockout.clear(user.email)
+    await rs.hooks.fire("user_logged_in", user=user)
+
+    role = get_or_create_profile(user.id)
+    _set_session_cookie(response, token, max_age=rs.config.jwt_ttl_seconds)
+    return {"id": user.id, "email": user.email, "role": role}
+
+
+@app.post("/api/logout")
+async def logout(request: Request, response: Response):
+    token = request.cookies.get(SESSION_COOKIE)
+    if token:
+        try:
+            payload = rs.jwt.decode(token)
+            await rs.blacklist.revoke(payload.jti, payload.exp)
+        except TokenError:
+            pass
+    _clear_session_cookie(response)
+    return {"ok": True}
+
+
+async def get_current_user(request: Request) -> BaseUser:
+    """Read the session cookie, verify the JWT, return the BaseUser."""
+    token = request.cookies.get(SESSION_COOKIE)
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = rs.jwt.decode(token)
+    except TokenError:
+        raise HTTPException(status_code=401, detail="Invalid or expired session")
+    if await rs.blacklist.is_revoked(payload.jti):
+        raise HTTPException(status_code=401, detail="Session has been revoked")
+    user = await rs.users.get_by_id(payload.sub)
+    if user is None or not user.is_active:
+        raise HTTPException(status_code=401, detail="User no longer active")
+    if is_payload_bulk_revoked(payload, user.tokens_invalidated_after):
+        raise HTTPException(status_code=401, detail="Session was invalidated; please sign in again")
+    request.state.regstack_user = user
+    return user
+
+
+def current_user_id(user: BaseUser = Depends(get_current_user)) -> str:
+    assert user.id is not None
+    return user.id
+
+
+# ── GET /api/me ──────────────────────────────────────────────────────────────
+
+@app.get("/api/me")
+def get_me(user: BaseUser = Depends(get_current_user)):
+    assert user.id is not None
+    role = get_or_create_profile(user.id)
+    return {"id": user.id, "email": user.email, "role": role}
+
+
+# ── PATCH /api/me/role ───────────────────────────────────────────────────────
+
+class RoleUpdate(BaseModel):
+    role: str
+
+
+@app.patch("/api/me/role")
+def update_role(body: RoleUpdate, user_id: str = Depends(current_user_id)):
+    if body.role not in VALID_ROLES:
+        raise HTTPException(status_code=400, detail="role must be 'entrepreneur' or 'trader'")
+    current_role = get_or_create_profile(user_id)  # ensure row exists
+
+    # Same persona — nothing to do, and crucially no destructive wipe.
+    if body.role == current_role:
+        return {"id": user_id, "role": current_role, "deleted": False}
+
+    # Switching persona is destructive: a user may only ever hold one set of
+    # results. Wipe all of their attempts (and the questions under them) so the
+    # new persona starts from a clean slate.
     db = get_db()
     try:
         db.execute(
-            "INSERT INTO users (user_id, role) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET role = excluded.role",
-            (user_id, role),
+            """DELETE FROM questions
+               WHERE attempt_id IN (SELECT id FROM bias_attempts WHERE user_id = ?)""",
+            (user_id,),
         )
+        db.execute("DELETE FROM bias_attempts WHERE user_id = ?", (user_id,))
+        db.execute("UPDATE users SET role = ? WHERE auth_user_id = ?", (body.role, user_id))
         db.commit()
     finally:
         db.close()
+    return {"id": user_id, "role": body.role, "deleted": True}
 
-    return {"userId": user_id, "role": role}
 
+# ── GET /api/me/biases ───────────────────────────────────────────────────────
 
-# ── GET /api/users/{userId}/biases ───────────────────────────────────────────
-
-@app.get("/api/users/{user_id}/biases")
-def get_user_biases(user_id: int):
-    if user_id <= 0:
-        raise HTTPException(status_code=400, detail="Invalid userId")
-
+@app.get("/api/me/biases")
+def get_my_biases(user_id: str = Depends(current_user_id)):
+    get_or_create_profile(user_id)
     db = get_db()
     try:
         rows = db.execute(
@@ -117,23 +245,20 @@ def get_user_biases(user_id: int):
 
 # ── POST /api/attempts ───────────────────────────────────────────────────────
 
-@app.post("/api/attempts")
-def create_attempt(body: dict[str, Any]):
-    user_id = body.get("userId")
-    bias = body.get("bias")
+class CreateAttemptRequest(BaseModel):
+    bias: str
 
-    if not isinstance(user_id, int) or user_id <= 0:
-        raise HTTPException(status_code=400, detail="userId must be a positive integer")
+
+@app.post("/api/attempts")
+def create_attempt(body: CreateAttemptRequest, user_id: str = Depends(current_user_id)):
+    bias = body.bias
     if not bias or bias not in BIAS_NAMES:
         raise HTTPException(status_code=400, detail="Invalid bias name")
 
+    user_role = get_or_create_profile(user_id)
+
     db = get_db()
     try:
-        user = db.execute("SELECT user_id, role FROM users WHERE user_id = ?", (user_id,)).fetchone()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        user_role = user["role"] or "entrepreneur"
-
         existing = db.execute(
             "SELECT completed_at FROM bias_attempts WHERE user_id = ? AND bias = ?",
             (user_id, bias),
@@ -141,7 +266,6 @@ def create_attempt(body: dict[str, Any]):
         if existing and existing["completed_at"]:
             raise HTTPException(status_code=409, detail="This bias has already been completed")
 
-        # Resume incomplete attempt if one exists
         existing_attempt = db.execute(
             "SELECT id FROM bias_attempts WHERE user_id = ? AND bias = ?",
             (user_id, bias),
@@ -149,14 +273,12 @@ def create_attempt(body: dict[str, Any]):
         if existing_attempt:
             return {"attemptId": existing_attempt["id"]}
 
-        # Create new attempt row
         cur = db.execute(
             "INSERT INTO bias_attempts (user_id, bias) VALUES (?, ?)", (user_id, bias)
         )
         db.commit()
         attempt_id = cur.lastrowid
 
-        # Use default questions if seeded for this role
         defaults = db.execute(
             "SELECT * FROM default_questions WHERE role = ? AND bias = ? ORDER BY question_number",
             (user_role, bias),
@@ -170,7 +292,6 @@ def create_attempt(body: dict[str, Any]):
                 )
             db.commit()
             return {"attemptId": attempt_id}
-
     finally:
         db.close()
 
@@ -212,18 +333,30 @@ def create_attempt(body: dict[str, Any]):
     return {"attemptId": attempt_id}
 
 
-# ── GET /api/attempts/{id} ───────────────────────────────────────────────────
-
-@app.get("/api/attempts/{attempt_id}")
-def get_attempt(attempt_id: int):
+def _load_owned_attempt(attempt_id: int, user_id: str) -> sqlite3.Row:
+    """Fetch an attempt and verify it belongs to the caller. Closes its own conn."""
     db = get_db()
     try:
         attempt = db.execute(
             "SELECT * FROM bias_attempts WHERE id = ?", (attempt_id,)
         ).fetchone()
-        if not attempt:
-            raise HTTPException(status_code=404, detail="Attempt not found")
+    finally:
+        db.close()
+    if not attempt:
+        raise HTTPException(status_code=404, detail="Attempt not found")
+    if attempt["user_id"] != user_id:
+        raise HTTPException(status_code=403, detail="Not your attempt")
+    return attempt
 
+
+# ── GET /api/attempts/{id} ───────────────────────────────────────────────────
+
+@app.get("/api/attempts/{attempt_id}")
+def get_attempt(attempt_id: int, user_id: str = Depends(current_user_id)):
+    attempt = _load_owned_attempt(attempt_id, user_id)
+
+    db = get_db()
+    try:
         questions = db.execute(
             "SELECT * FROM questions WHERE attempt_id = ? ORDER BY question_number ASC",
             (attempt_id,),
@@ -262,7 +395,8 @@ def get_attempt(attempt_id: int):
 # ── POST /api/attempts/{id}/answer ───────────────────────────────────────────
 
 @app.post("/api/attempts/{attempt_id}/answer")
-def save_answer(attempt_id: int, body: dict[str, Any]):
+def save_answer(attempt_id: int, body: dict[str, Any], user_id: str = Depends(current_user_id)):
+    _load_owned_attempt(attempt_id, user_id)
     question_number = body.get("questionNumber")
     answer = body.get("answer")
 
@@ -305,14 +439,13 @@ def save_answer(attempt_id: int, body: dict[str, Any]):
 # ── GET /api/attempts/{id}/analysis ─────────────────────────────────────────
 
 @app.get("/api/attempts/{attempt_id}/analysis")
-async def get_analysis(attempt_id: int):
+async def get_analysis(attempt_id: int, user_id: str = Depends(current_user_id)):
+    _load_owned_attempt(attempt_id, user_id)
     db = get_db()
     try:
         attempt = db.execute(
             "SELECT * FROM bias_attempts WHERE id = ?", (attempt_id,)
         ).fetchone()
-        if not attempt:
-            raise HTTPException(status_code=404, detail="Attempt not found")
         if not attempt["completed_at"]:
             raise HTTPException(status_code=400, detail="Attempt is not completed")
 
@@ -321,7 +454,6 @@ async def get_analysis(attempt_id: int):
             (attempt_id,),
         ).fetchall()
 
-        # Compute score
         total_score = 0
         for q in questions:
             if q["answer_given"]:
@@ -330,7 +462,6 @@ async def get_analysis(attempt_id: int):
 
         level = compute_level(total_score)
 
-        # Cached path
         if attempt["analysis_summary"]:
             if not attempt["level"]:
                 db.execute("UPDATE bias_attempts SET level = ? WHERE id = ?", (level, attempt_id))
@@ -352,7 +483,6 @@ async def get_analysis(attempt_id: int):
     finally:
         db.close()
 
-    # Streaming path
     client = get_anthropic()
 
     async def generate():
@@ -379,7 +509,6 @@ async def get_analysis(attempt_id: int):
                 full_text += text
                 yield text
 
-        # Save summary after streaming
         db2 = get_db()
         try:
             db2.execute(
@@ -390,7 +519,6 @@ async def get_analysis(attempt_id: int):
         finally:
             db2.close()
 
-        # Fire background detail generation
         if not attempt_dict["analysis"]:
             asyncio.create_task(_generate_detail(attempt_id, attempt_dict, questions_list, total_score, level))
 
@@ -445,24 +573,23 @@ async def _generate_detail(attempt_id: int, attempt: dict, questions: list, tota
 # ── GET /api/attempts/{id}/analysis/detail ───────────────────────────────────
 
 @app.get("/api/attempts/{attempt_id}/analysis/detail")
-def get_analysis_detail(attempt_id: int):
+def get_analysis_detail(attempt_id: int, user_id: str = Depends(current_user_id)):
+    _load_owned_attempt(attempt_id, user_id)
     db = get_db()
     try:
         attempt = db.execute(
             "SELECT * FROM bias_attempts WHERE id = ?", (attempt_id,)
         ).fetchone()
-        if not attempt:
-            raise HTTPException(status_code=404, detail="Attempt not found")
-
         if not attempt["analysis"]:
             return JSONResponse(content={"ready": False}, status_code=202)
-
         return {"ready": True, "detail": attempt["analysis"]}
     finally:
         db.close()
 
 
 # ── POST /api/admin/seed-questions ───────────────────────────────────────────
+# TODO(phase-4): restrict to admins. Currently open since it only writes seed
+# content (no user data) and is invoked manually during setup.
 
 @app.post("/api/admin/seed-questions")
 def seed_questions(request: Request, body: dict[str, Any] = {}):
@@ -482,7 +609,6 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
     seeded = []
     failed = []
 
-    # Trader questions come from hardcoded data — no Claude needed
     if role == "trader":
         db = get_db()
         try:
@@ -513,7 +639,6 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
             status_code=500 if all_failed else 200,
         )
 
-    # Entrepreneur questions generated via Claude
     client = get_anthropic()
 
     for bias_obj in biases_to_seed:
