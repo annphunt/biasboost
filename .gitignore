@@ -11,3 +11,4 @@ __pycache__/
 .pytest_cache/
 tsconfig.tsbuildinfo
 .claude/
+regstack.db
