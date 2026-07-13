@@ -1,0 +1,662 @@
+{
+  "Confirmation Bias": [
+    {
+      "bias": "Confirmation Bias",
+      "question": "You've run eight user interviews about your workflow automation product. Five users described the core scheduling feature as 'nice to have' and three called it 'essential to their daily process.' Your team spent six months building it and believes it's the product's foundation. How do you interpret this split and what do you do next?",
+      "options": {
+        "A": "Treat the three 'essential' responses as the signal — early adopters who truly get the product are always a minority, and they're the ones who'll drive initial growth",
+        "B": "Flag the split as a genuine uncertainty, pause roadmap decisions on this feature, and design a quick follow-up study specifically to understand what workflow context separates the two groups",
+        "C": "Weight all eight responses equally and present the raw 5-3 split to the team as evidence the feature's value proposition needs rethinking before you invest further",
+        "D": "Dig into the transcripts of the three 'essential' users to extract specific language you can use in positioning, while noting the 5-3 split in your research log for future reference"
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Confirmation Bias",
+      "question": "You're building a compliance automation tool for mid-market fintechs and have been running a top-down, champion-the-CTO sales motion. An advisor with deep fintech experience tells you bluntly that compliance decisions in this segment are almost always driven bottom-up by ops teams, not CTOs, and that your motion is why deals are stalling. You've had two CTOs express genuine enthusiasm. What's your most likely next step?",
+      "options": {
+        "A": "Ask the advisor to walk you through two or three specific deals where the bottom-up motion worked, then map that against your own stalled deals to look for a pattern before changing anything",
+        "B": "Thank the advisor and immediately restructure one active deal to test a parallel ops-team track alongside your existing CTO relationship, treating it as a low-cost experiment",
+        "C": "Take the advisor's feedback seriously but weigh it against the CTO enthusiasm you've seen firsthand — two engaged CTOs is real signal, and you'd want more than one advisor's opinion before overhauling your motion",
+        "D": "Run a quick analysis of where each of your stalled deals broke down — if the pattern points to ops rather than CTOs, you'll pivot; if not, you'll stay the course"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 0,
+        "C": 3,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Confirmation Bias",
+      "question": "You co-founded a developer tooling startup and have always believed product-led growth is the right model for your space. Your co-founder recently shared data showing your three largest accounts — which generate 70% of revenue — all came through direct outbound, not self-serve. You're about to allocate the next two months of engineering capacity. How do you factor this into your decision?",
+      "options": {
+        "A": "Acknowledge the data point but prioritize improving the self-serve onboarding flow — the outbound accounts may reflect your early hustle, not a durable pattern, and PLG is where the compounding returns are in developer tools",
+        "B": "Treat the 70% revenue concentration as a hard fact that your current GTM instinct can't explain away, and explicitly debate with your co-founder whether to shift one engineer toward sales-enablement tooling before deciding",
+        "C": "Propose a structured split: one engineer on self-serve improvements, one on features your outbound accounts have requested, and revisit the data in 60 days to see which track is moving faster",
+        "D": "Research how comparable developer tools companies at your stage allocated engineering between PLG and sales-assisted motions, and use that as a benchmark to pressure-test both your instinct and your co-founder's read"
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Confirmation Bias",
+      "question": "Your AI contract review startup has focused on law firms as your primary customer. Two months ago, you also signed three in-house legal teams at tech companies almost by accident — they found you through a blog post. All three just renewed at full price with minimal support, while two of your law firm customers have gone quiet and seem likely to churn. How do you process this?",
+      "options": {
+        "A": "Investigate the quiet law firm accounts first — churn from your core segment is the most urgent signal and you need to understand whether it's a product gap or a relationship issue before drawing conclusions about in-house teams",
+        "B": "Recognise that three renewals versus two likely churns is too small a sample to reorient around, but document the pattern carefully and make in-house legal teams a formal experiment in the next quarter's pipeline",
+        "C": "Read the renewals as confirmation that in-house legal teams are a stronger fit and start redirecting outbound toward that persona — law firms were always a harder sell and this data is pointing somewhere clearer",
+        "D": "Hold a structured session with your co-founder where you each independently assess what the renewal and churn data implies about ICP, then compare your reads before deciding anything"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 1,
+        "C": 3,
+        "D": 0
+      }
+    }
+  ],
+  "Anchoring Bias": [
+    {
+      "bias": "Anchoring Bias",
+      "question": "Your first paying enterprise customer signed at $18,000/year after a long negotiation — it felt like a win at the time. You're now in late-stage talks with a similar-sized prospect, and your sales advisor casually mentioned that '$18–20k is probably where you'll land with companies this size.' The new prospect hasn't asked about price yet. How do you approach the pricing conversation?",
+      "options": {
+        "A": "Open at $18,000 since that's what a comparable customer paid and you don't want to lose momentum with an aggressive number.",
+        "B": "Ignore your advisor's comment entirely and run a fresh value-based analysis before the pricing conversation — what this prospect stands to gain should set the floor, not your first deal.",
+        "C": "Open at $32,000 to give yourself room to negotiate down, but mentally anchor your walk-away at $18,000 since that's proven achievable.",
+        "D": "Ask the prospect about their budget range first so you can frame your number relative to what they're expecting."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Anchoring Bias",
+      "question": "A well-known competitor in your space just announced a $6M seed round. You were planning to raise $2.5M — enough to cover 18 months of runway at your current burn. Three people this week have asked 'are you raising more given what [competitor] just did?' You haven't changed your model or your plans. What do you do?",
+      "options": {
+        "A": "Stick to $2.5M. The competitor's round is irrelevant to your actual cash needs, and raising more than you can deploy thoughtfully creates its own problems.",
+        "B": "Revise the target upward to at least $4M — investors will perceive a $2.5M raise as underpowered relative to the competitive landscape, and perception matters during a raise.",
+        "C": "Use $6M as a reference point but settle on $4.5M as a reasonable midpoint that signals ambition without overreaching.",
+        "D": "Pause and model out what an additional $1.5–2M would specifically fund before deciding — if you can articulate concrete uses, adjust the target; if not, stay at $2.5M."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 3,
+        "C": 2,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Anchoring Bias",
+      "question": "When you raised your seed round, you pitched a product with five core modules. You're now eight months in, two modules are getting almost all the usage, and your team is stretched thin maintaining the other three. A co-founder suggests cutting those three modules entirely and going deep on the two that work. You feel uneasy. What's driving your hesitation and what do you do?",
+      "options": {
+        "A": "The five-module vision is what investors funded — cutting it feels like a bait-and-switch, so you keep all five but deprioritize the weaker ones rather than removing them.",
+        "B": "Usage data is clear: cut the three underused modules now, communicate transparently with your design partners, and redeploy the engineering capacity where it's actually creating value.",
+        "C": "Run a quick survey of your current users to validate whether the low usage reflects poor discoverability or genuine lack of need before making an irreversible call.",
+        "D": "Keep the modules in the product but stop actively developing them — sunset them quietly over the next two quarters so it feels like a natural evolution rather than a retreat."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Anchoring Bias",
+      "question": "You and your co-founder are each taking $90,000/year to preserve runway. You're about to make an offer to a strong head of growth — your first non-technical hire. Your instinct is to offer $95,000 plus equity, reasoning that it's above what you're paying yourselves and signals you value the role. A friend who runs a similar-stage startup says market rate for this profile is $130–145k. How do you think about the offer?",
+      "options": {
+        "A": "Offer $105,000 as a stretch from your internal anchor — it's meaningfully above founder salaries and feels fair given the stage and equity upside.",
+        "B": "Offer $95,000 as planned. You're a seed-stage startup; candidates who care about mission will understand the trade-off, and it keeps burn predictable.",
+        "C": "Set aside what you and your co-founder earn — that number is a founder choice, not a market signal. Research what comparable hires are actually earning and make an offer competitive enough to close someone genuinely strong.",
+        "D": "Offer $120,000 with a 6-month review tied to pipeline metrics, splitting the difference between your gut number and market rate while building in accountability."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 3,
+        "C": 0,
+        "D": 1
+      }
+    }
+  ],
+  "Availability Heuristic": [
+    {
+      "bias": "Availability Heuristic",
+      "question": "At last week's industry conference, you gave a live demo and three separate attendees — all unprompted — asked whether your platform could integrate with a legacy ERP system you've never supported. It was the most animated feedback you've received in months. Back at the office, your co-founder points out that none of your current paying customers have ever requested this. How do you weigh this signal?",
+      "options": {
+        "A": "Park the ERP idea and cross-reference it against your CRM data and past customer interviews before acting — three conference conversations don't outweigh months of existing signal.",
+        "B": "Add the ERP integration to the next sprint. The fact that three strangers independently raised it the same week suggests it's a real gap in the market.",
+        "C": "Treat it as a strong leading indicator and begin scoping the integration immediately — live, unprompted reactions from potential buyers are more honest than survey responses.",
+        "D": "Schedule follow-up calls with the three attendees to probe whether they'd pay for it, while leaving the current roadmap unchanged until you have more data."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Availability Heuristic",
+      "question": "A founder you respect — running a logistics-automation startup — told you over coffee last week that they lost their biggest customer because they under-invested in onboarding. It was a vivid, painful story. Now you're reviewing your own burn and your head of growth is pushing to hire another sales rep. You find yourself hesitating and wondering whether you should hire a customer-success person instead, even though none of your current customers have flagged onboarding issues. What drives your decision?",
+      "options": {
+        "A": "Stick to the sales hire — your pipeline is the bottleneck your own data points to, and one cautionary anecdote from a different business shouldn't redirect your spend.",
+        "B": "Split the difference: extend the timeline on both hires and run a quick NPS pulse with current customers to check whether onboarding is quietly a risk before committing.",
+        "C": "Prioritize the customer-success hire. Even if no one has complained yet, onboarding failures are often silent — that story is a timely warning you'd regret ignoring.",
+        "D": "Bring in a fractional customer-success consultant for 90 days to audit your onboarding while you proceed with the sales rep hire — covering both risks without fully diverting budget."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 1,
+        "C": 3,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Availability Heuristic",
+      "question": "A competitor in your space just had a very public shutdown covered in two major tech outlets. The articles described how they ran out of runway after delaying a fundraise by six months. You have about nine months of runway and were planning to start raising your Series A in five months. Your co-founder is now urging you to start the process immediately. What's your reasoning?",
+      "options": {
+        "A": "Start reaching out to investors now. The competitor's story is a clear signal that the fundraising window can close faster than you expect — better to be early than caught short.",
+        "B": "Hold to the five-month plan. One high-profile shutdown, however vivid, doesn't change your specific burn rate, milestones, or the investor relationships you've been building toward.",
+        "C": "Use the news as a prompt to stress-test your runway assumptions and investor pipeline, but only accelerate the raise if that review surfaces a genuine gap in your current plan.",
+        "D": "Move up the timeline by six to eight weeks as a precaution — the market sentiment risk is real even if your fundamentals are solid, and a slightly earlier process costs little."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Availability Heuristic",
+      "question": "Your first marketing hire quit two months ago after clashing repeatedly with the engineering-heavy culture — it was a disruptive, morale-draining few weeks that's still fresh in everyone's mind. You now need to fill a growth role again. Your co-founder suggests you hire someone with a stronger technical background this time to avoid a repeat. You're not sure the culture clash was really about technical fluency. How do you approach the decision?",
+      "options": {
+        "A": "Agree with your co-founder and make a technical background a hard requirement in the job spec — the culture clash was real and the safest way to prevent a repeat is to screen for that fit explicitly.",
+        "B": "Revisit what actually caused the departure — interview the former hire, talk to the team, and build the job spec around root-cause findings rather than the most recent painful experience.",
+        "C": "Weight technical fluency heavily in interviews but not as a hard filter — the recent experience is relevant context, even if it isn't the whole picture.",
+        "D": "Bring in a fractional growth lead for 60 days before committing to a full-time hire, giving the team time to articulate what they actually need rather than reacting to the last bad experience."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    }
+  ],
+  "Overconfidence Bias": [
+    {
+      "bias": "Overconfidence Bias",
+      "question": "You're in late-stage conversations with your most promising enterprise prospect — a mid-size logistics company that's been responsive and enthusiastic. Your champion says the legal and procurement process 'usually takes a few weeks.' Based on your read of the relationship and the conversations so far, how do you plan your next 90 days of runway?",
+      "options": {
+        "A": "Plan as if the deal closes in 3–4 weeks as the champion suggested, and start allocating budget toward onboarding resources now so you're ready to move fast.",
+        "B": "Treat the deal as likely but assume 8–12 weeks to close given typical enterprise procurement realities, and keep burn flat until ink is on paper.",
+        "C": "Build two parallel runway scenarios — one where the deal closes in 6 weeks and one where it slips to next quarter — and make spending decisions based on the more conservative path.",
+        "D": "Assume the deal closes in 4–6 weeks because the champion's enthusiasm is a strong signal, but hold off on any new hires until you see a signed order form."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Overconfidence Bias",
+      "question": "You run an AI-powered contract review tool. You've had solid traction with 10-person law firms paying $300/month, and one mid-market legal team at a 200-person company recently went live after a smooth onboarding. Your co-founder thinks you're ready to shift focus to mid-market and above. How do you assess whether the product is actually ready for that move?",
+      "options": {
+        "A": "One successful mid-market onboarding is a meaningful proof point. If the product handled their complexity, it can handle others at that tier — start pursuing mid-market deals actively.",
+        "B": "Map out exactly which mid-market requirements — SSO, audit logs, admin controls, SLAs — you currently can't meet, then decide whether the gap is a dealbreaker or something you can close in one sprint.",
+        "C": "Run a structured interview with the mid-market customer to surface every friction point they papered over during onboarding before concluding the product is genuinely ready.",
+        "D": "The smooth onboarding is encouraging but a sample of one. Treat mid-market as a parallel motion rather than a pivot, and let a second or third deal either confirm or challenge the readiness assumption."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Overconfidence Bias",
+      "question": "You've closed your first three paying customers yourself through your personal network and founder-led outreach. Cash is tight, but you're considering hiring your first sales rep to accelerate growth. A candidate with relevant SaaS experience has asked for a $110K base plus commission. How do you think about whether to make this hire now?",
+      "options": {
+        "A": "You've proven the sale can be made — a good rep should be able to replicate what you've done. The cost is real but the upside justifies moving forward now.",
+        "B": "Founder-led sales and rep-led sales are different motions. Before hiring, try to identify whether your closed deals are replicable without your personal relationships and domain credibility doing the heavy lifting.",
+        "C": "Hire the rep but on a lower base with heavier commission weighting, so the compensation structure forces them to prove out the motion rather than assuming it transfers from your deals.",
+        "D": "Give yourself one more month to close a deal with a prospect who came in cold — not through your network — to test whether the sales motion is actually teachable before committing to a rep's salary."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Overconfidence Bias",
+      "question": "You've built an AI scheduling assistant for healthcare clinic administrators. Your three design partners have been using it for six weeks and feedback has been largely positive — they're saving time and haven't flagged major bugs. You're debating whether to open the product to a broader waitlist of 80 clinics. How do you frame the launch decision?",
+      "options": {
+        "A": "Six weeks of positive signal from three design partners who helped shape the product is a limited test. Run a structured check on what workflows and edge cases the broader waitlist might surface that your design partners never hit.",
+        "B": "The design partners are your toughest critics — they were involved in building it and had every incentive to flag problems. Positive signal from them is actually more meaningful than signal from passive users would be.",
+        "C": "Open to 15–20 waitlist clinics first, specifically choosing ones with different clinic sizes and specialties than your design partners, to stress-test the product before full rollout.",
+        "D": "Positive feedback and no major bugs after six weeks is a reasonable bar. Open the full waitlist — dragging out a limited beta when you have paying interest burns runway and momentum."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 3,
+        "C": 1,
+        "D": 2
+      }
+    }
+  ],
+  "Loss Aversion": [
+    {
+      "bias": "Loss Aversion",
+      "question": "Your team built a native Salesforce integration eight months ago to win a pilot. That pilot converted, but since then zero other customers have asked for or used it. Maintaining it consumes roughly one day of engineering per week. You're deciding whether to deprecate it. What's your instinct?",
+      "options": {
+        "A": "Keep it live but stop actively maintaining it — if it breaks for a future customer, you can deal with it then rather than removing something that's already built.",
+        "B": "Deprecate it now, document the decision, and redirect that engineering capacity to the integration your last three prospects actually asked for.",
+        "C": "Keep it live and mention it in sales calls as a differentiator — even one prospect that cares about Salesforce could justify the maintenance cost.",
+        "D": "Run a quick survey with your existing customers before deciding — if even one signals future intent to use it, that tips the balance toward keeping it."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Loss Aversion",
+      "question": "You closed a three-month paid pilot with a logistics company at $1,500/month — a price you set hastily to get the deal signed. Halfway through, your new customers are paying $4,000/month for comparable scope, and your unit economics at $1,500 are negative after support time. The pilot contact has been happy and engaged. How do you handle pricing for the renewal conversation?",
+      "options": {
+        "A": "Renew at $1,500 for one more cycle to protect the relationship, then renegotiate — losing this reference customer now would cost more than the margin gap.",
+        "B": "Have an honest conversation now: share that your pricing has evolved, propose $3,500 for renewal, and frame it around the expanded value they've seen.",
+        "C": "Offer a 'loyalty rate' of $2,200 — enough to improve margins without risking the renewal by jumping too far too fast.",
+        "D": "Let the pilot conclude, then send a new proposal at $4,000 as if starting fresh — anchoring to the pilot price makes any increase feel like a loss to them."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Loss Aversion",
+      "question": "You founded your compliance-automation startup specifically for financial services. Six months in, two insurance companies and a healthcare network reached out organically, and your pilots with them are moving faster than any fintech deal you've pursued. Your co-founder wants to broaden your ICP now. You've spent significant time building fintech-specific features and relationships. How do you weigh in?",
+      "options": {
+        "A": "Push to stay in fintech for at least two more quarters — you've built real domain credibility and switching sectors now means that investment is wasted.",
+        "B": "Follow the inbound signal deliberately: pause new fintech outbound, run the healthcare and insurance pilots aggressively, and revisit ICP in 60 days based on close rates.",
+        "C": "Pursue both in parallel — assign one co-founder to fintech and one to the new verticals so you don't have to abandon either path yet.",
+        "D": "Reframe your positioning as 'regulated industries' broadly, which lets you chase the new verticals without formally abandoning the fintech work you've already done."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Loss Aversion",
+      "question": "Your head of growth joined as your third employee and helped you get your first ten customers. Nine months later, the role has clearly outgrown her — she struggles with attribution modeling, can't run structured experiments, and your last two pipeline quarters have been flat. You've coached her for two months with little change. A strong external candidate has applied. What's your most honest reaction to making the hire?",
+      "options": {
+        "A": "You'd likely delay the external hire another month or two — replacing someone who was there from the beginning feels like erasing what she contributed, and you want to be absolutely sure.",
+        "B": "You'd move forward with the external hire and transition her to a different role internally if one fits, but wouldn't let loyalty to the past block the decision.",
+        "C": "You'd bring in the external candidate as a 'senior growth advisor' on contract first, so you're not fully committing to a replacement unless it's clearly necessary.",
+        "D": "You'd make the hire decisively — flat pipeline for two quarters is a signal you can't afford to rationalize away, regardless of history."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 2,
+        "D": 0
+      }
+    }
+  ],
+  "Sunk Cost Fallacy": [
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "You spent the last four months building a sophisticated data pipeline feature that your earliest design partner specifically requested. It's now ready, but your two newest paying customers — who represent more typical buyers — say they don't need it and wouldn't have paid for it. Your design partner loves it. How do you think about this going forward?",
+      "options": {
+        "A": "Treat the pipeline as a differentiator and use it to attract more design partners like the first one, since they clearly see value others don't yet.",
+        "B": "Acknowledge the mismatch and let the newer customers' feedback reshape your roadmap, even if it means the pipeline feature sits unused for most.",
+        "C": "Keep actively developing and refining the pipeline because four months of work has given your team deep expertise here that would be wasteful to abandon.",
+        "D": "Run a structured conversation with all three customers to find out whether the gap is in the feature itself or in how you're explaining its value before deciding."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "You've been in a pilot with a large enterprise for six months. Your team has run three rounds of customisation, two executive presentations, and dozens of calls. The champion inside the company is enthusiastic, but procurement has stalled twice and the deal size has quietly shrunk from $120k to $40k. A mid-market prospect you spoke to last week could close in three weeks at $30k with no customisation. Where do you focus your energy this month?",
+      "options": {
+        "A": "Stay primarily on the enterprise deal — you're close, the logo would open doors, and walking away now wastes everything you've invested in the relationship.",
+        "B": "Close the mid-market deal first since the timeline and economics are clear, then reassess the enterprise deal with whatever capacity remains.",
+        "C": "Push the enterprise champion to force an internal decision within two weeks; if there's no commitment by then, deprioritise it and move on.",
+        "D": "Split effort evenly between both — the enterprise deal's champion enthusiasm is a real signal and the mid-market deal is too easy to lose by neglecting it."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "Your first engineering hire joined eight months ago with a lot of promise. Lately you've noticed she's slower than expected, her code needs frequent rework, and two early hires have quietly mentioned it's affecting their velocity. You've had two direct conversations with her about it and seen only modest improvement. She knows your codebase better than anyone else and onboarding someone new would take months. What do you do?",
+      "options": {
+        "A": "Set a clear, time-boxed 30-day performance milestone with specific outcomes and make the call based on results, regardless of tenure or ramp cost.",
+        "B": "Move her to a less critical workstream where her current output level does less damage, and hire a stronger engineer alongside her.",
+        "C": "Give her more time — eight months isn't long enough to fairly judge someone, and replacing her now would cost you months of productivity at a moment you can't afford it.",
+        "D": "Have a final candid conversation that explicitly frames this as a decision point, and let her response and the following two weeks determine the outcome."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "Fourteen months ago you raised your seed round on a thesis that enterprises would pay a premium for your AI model's explainability features. You've spent most of that capital building those features. In the last two months, three separate prospects have said explainability isn't on their procurement checklist — they care about accuracy and integration speed. One advisor says stay the course because the market will catch up; another says pivot the positioning now. How do you weigh this?",
+      "options": {
+        "A": "Reposition around accuracy and integration speed immediately, treating explainability as a secondary selling point rather than the core pitch, regardless of how central it was to the fundraise.",
+        "B": "Hold the positioning for one more quarter — your seed investors bought into the explainability thesis and shifting now could undermine their confidence at exactly the wrong moment.",
+        "C": "The fact that you've spent fourteen months and most of your capital validating this thesis means you have more real-world insight than the two or three prospects who've pushed back; stay the course.",
+        "D": "Run both positioning angles in parallel across your next six prospects to get a larger signal before committing to a change."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    }
+  ],
+  "Halo Effect": [
+    {
+      "bias": "Halo Effect",
+      "question": "A partner at one of the most respected venture firms in your space—someone who led deals in two category-defining companies—sits in on a founder dinner and tells you your current onboarding flow is 'too complex' and that enterprise buyers will bounce before they see value. You haven't heard this specific complaint from your actual pilots, but the partner speaks with real conviction. What do you do next?",
+      "options": {
+        "A": "Treat it as a strong signal worth acting on quickly—this person has seen dozens of successful products scale and their pattern recognition is probably right even if your pilots haven't surfaced it yet.",
+        "B": "Schedule a focused round of onboarding-specific questions with your active pilots this week to test whether the concern has any basis before touching the flow.",
+        "C": "Log it as one data point but keep your current roadmap priorities—one outside opinion, however credible the source, shouldn't redirect a team with limited sprint capacity.",
+        "D": "Ask the partner to introduce you to two or three of their portfolio companies' ops leads so you can hear directly how those teams approached onboarding complexity at a similar stage."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Halo Effect",
+      "question": "You're building a B2B compliance workflow tool. At a networking event you spend an hour with one of the co-founders of a well-known product design consultancy whose client list reads like a Fortune 100 hall of fame. She tells you your pricing model—usage-based—is a mistake and that compliance buyers need predictable seat-based contracts or procurement will kill every deal. You've run three pilots under usage-based pricing with no pushback so far. How do you weigh her input?",
+      "options": {
+        "A": "Revisit your pricing model seriously—someone who has negotiated with compliance buyers at that scale almost certainly understands procurement dynamics better than three small pilots can reveal.",
+        "B": "Explicitly ask your three pilot contacts whether pricing predictability has come up internally in their procurement conversations, using her framing as a prompt.",
+        "C": "Hold your current model until you have a deal that actually dies on pricing structure—pilots succeeding is real evidence; one external opinion is not.",
+        "D": "Design a quick test: propose a seat-based alternative to the next two inbound prospects and compare how procurement conversations unfold before making any model change."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Halo Effect",
+      "question": "You're interviewing candidates for your first dedicated sales hire. One finalist spent six years at Google Cloud in an enterprise sales role and has a polished presence—she clearly knows how to navigate large organizations and speaks fluently about your space. A second finalist has spent four years selling data tools at two Series A startups, with documented quota attainment, but his communication style is rougher and he asks slower questions. You can only hire one. What most shapes your decision?",
+      "options": {
+        "A": "The Google Cloud candidate's institutional credibility will open doors with enterprise buyers in a way the startup candidate probably can't—that network and brand association matters enormously at this stage.",
+        "B": "Run a structured reference check focused specifically on each candidate's pipeline-building behavior in their first six months at a new role, since your biggest risk is zero inbound at a seed-stage company.",
+        "C": "The startup candidate's demonstrated quota attainment in resource-constrained environments is more directly predictive of what you need than a polished background from a company with massive marketing support.",
+        "D": "Give both candidates a short paid work trial—ask each to map out how they'd approach your first ten outbound accounts—and evaluate the output rather than the resume."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Halo Effect",
+      "question": "Your largest paid pilot is a globally recognized professional services firm—the kind of logo that would transform your fundraising deck and sales conversations. Their IT lead has requested that you build a custom SSO integration with a legacy identity provider that no other prospect has mentioned. The build would consume roughly six weeks of your only backend engineer's time. How do you think about this request?",
+      "options": {
+        "A": "Prioritize the integration—a customer of that caliber doesn't make arbitrary requests, and if they need it, the broader enterprise segment almost certainly will too, even if prospects haven't said so yet.",
+        "B": "Explore whether a third-party middleware solution or a shorter configuration workaround could satisfy their requirement without committing six weeks of core engineering capacity.",
+        "C": "Survey your other active prospects and pipeline contacts specifically about identity provider requirements before committing any engineering time to a single-customer request.",
+        "D": "Negotiate with the pilot contact to scope down the request to a minimum version you could ship in two weeks, preserving runway for features with broader applicability."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 2,
+        "C": 0,
+        "D": 1
+      }
+    }
+  ],
+  "Framing Effect": [
+    {
+      "bias": "Framing Effect",
+      "question": "Your monthly burn is $38,000. Your lead seed investor mentions in a casual check-in that your 'investment pace looks healthy for the stage' — implying you're deploying capital purposefully. A few days later, your co-founder flags that at this rate you have just under 11 months of runway left. How does this shape your next move?",
+      "options": {
+        "A": "The investor's framing is probably the more calibrated read — they've seen dozens of seed companies and if they're comfortable, you don't need to change course right now.",
+        "B": "You treat both framings as noise and run your own analysis: model out the scenarios where you hit key milestones within 8 months and where you don't, then decide on cuts or extensions from there.",
+        "C": "The runway number is what matters operationally — 11 months is tight, and regardless of how the investor framed it you start identifying which costs could be cut without slowing critical work.",
+        "D": "You bring both perspectives to your next co-founder sync and let the group debate whether you're 'investing' or 'burning', since getting alignment on the framing first will clarify the decision."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Framing Effect",
+      "question": "You've run six paid pilots over the past year. Four converted to ongoing contracts. You're preparing a sales deck slide summarising pilot outcomes. Your co-founder drafts it as: 'Two pilots did not convert.' A growth advisor suggests rewriting it as: 'Four out of six pilots became paying customers.' You're about to send the deck to three new enterprise prospects. What do you do?",
+      "options": {
+        "A": "Use the advisor's version — it's accurate and leads with the positive signal, which is what prospects respond to at this stage of evaluating a vendor.",
+        "B": "Use neither version as written. Instead, include both the conversion count and a brief note on why the two non-conversions ended, so prospects can judge fit themselves rather than being spun in either direction.",
+        "C": "Use your co-founder's version — enterprise buyers are sophisticated and a founder who leads with candour about non-conversions will stand out as unusually trustworthy.",
+        "D": "Drop the slide entirely for now. Aggregated pilot stats are a weak signal for enterprise prospects who care about specific use-case fit, and either framing risks anchoring a conversation you'd rather control live."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 2,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Framing Effect",
+      "question": "Your two engineers have been calling the messy backend architecture you shipped in the first six months 'technical debt' in every planning meeting. A new senior engineer you just hired refers to the same codebase as 'a real foundation to build on — rough but workable.' Nothing about the code itself has changed. How does this affect your next sprint planning?",
+      "options": {
+        "A": "The new engineer's read is probably more accurate — she's fresh and unbiased, and if she sees it as workable, you push the refactor further out and focus the next sprint on features customers are waiting for.",
+        "B": "You recognise that neither label changes the underlying facts, so you ask all three engineers to identify specific components that will block the next two product milestones, and make the refactor decision based on that concrete list.",
+        "C": "The fact that your two existing engineers have consistently called it debt matters more — they know where the bodies are buried, and you schedule a focused refactor sprint before adding more on top.",
+        "D": "You reframe it internally as 'foundation' going forward to reset team morale around the codebase, while privately keeping a list of the riskiest areas to revisit once you've hit your next customer milestone."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Framing Effect",
+      "question": "You and your co-founder are bringing in a third co-founder — a strong technical leader you've been trying to recruit for four months. The conversation has landed on somewhere between 10% and 15% equity. Your current co-founder says: 'We'd be giving away up to 15% of the company.' You find yourself thinking of it as: 'We'd each keep around 42% after the split.' The candidate is waiting for a decision by end of week. How do you proceed?",
+      "options": {
+        "A": "Focus on what you're retaining — if both founders still hold roughly 42% each, that's a strong alignment structure, and hesitating over the 'giving away' framing could cost you a candidate you've chased for four months.",
+        "B": "Set aside both ways of describing it and work through the decision on its actual merits: how much equity is needed to make the offer competitive, how much dilution you can absorb before the next round, and whether this person genuinely changes your trajectory.",
+        "C": "Take your co-founder's framing seriously as a signal — if they're instinctively thinking about it as 'giving away,' that tension is worth surfacing directly before you make an offer that one founder later resents.",
+        "D": "Offer 10% to anchor low, reasoning that the 'giving away' framing suggests your co-founder's ceiling is lower than yours, and you can always negotiate up if the candidate pushes back."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    }
+  ],
+  "Status Quo Bias": [
+    {
+      "bias": "Status Quo Bias",
+      "question": "You built your AI pipeline on a vector database you chose 14 months ago, mostly because it was easy to set up during the prototype phase. Two newer options have since launched with significantly better performance benchmarks and lower costs at your current scale, and your lead engineer is pushing to migrate. The migration would take roughly three weeks of engineering time. What do you do?",
+      "options": {
+        "A": "Migrate now — three weeks is a real cost but compounding on a suboptimal infrastructure stack will hurt you more as you scale.",
+        "B": "Keep the current setup for now; it works well enough and switching costs are real — revisit after you close two more paying customers.",
+        "C": "Ask the engineer to write up a one-page comparison, then schedule a decision in the next sprint planning so it doesn't get indefinitely deferred.",
+        "D": "Stick with what you have — benchmarks rarely reflect your specific workload and introducing instability right now is too risky."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 2,
+        "C": 0,
+        "D": 3
+      }
+    },
+    {
+      "bias": "Status Quo Bias",
+      "question": "You launched with a flat $1,500/month subscription to keep the sales conversation simple. Three of your five paying customers have grown their usage 4–6x since signing, and your unit economics on those accounts are now negative. A usage-based or tiered pricing model would fix this, but it means renegotiating with customers who are happy and currently expanding internally. How do you approach this?",
+      "options": {
+        "A": "Introduce new pricing tiers for any customers who sign from this point forward; grandfather existing customers indefinitely to protect those relationships.",
+        "B": "Move all customers to the new model with 60 days notice — delaying just makes the renegotiation harder and the economics worse.",
+        "C": "Have honest conversations with each existing customer individually, present the new model, and negotiate a transition timeline account by account.",
+        "D": "Hold pricing steady across the board until you hit 10 customers — changing terms on early adopters sets a bad precedent before you have proof points."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 1,
+        "C": 0,
+        "D": 3
+      }
+    },
+    {
+      "bias": "Status Quo Bias",
+      "question": "You started your compliance automation tool targeting mid-size law firms, spent eight months building relationships in that vertical, and closed two paid pilots. But over the last three months, four inbound inquiries have come unprompted from insurance carriers, two of whom converted to paid pilots faster and at higher ACV than any law firm. Your law firm pipeline has stalled. A co-founder says you should formally redirect focus to insurance. What is your instinct?",
+      "options": {
+        "A": "Redirect meaningful focus to insurance — inbound conversion speed and ACV are the clearest signals you have, and you should follow them deliberately.",
+        "B": "Run both verticals in parallel for another quarter with equal resource allocation before making any call — it's too early to abandon law firms.",
+        "C": "Insurance looks interesting but your law firm relationships and domain knowledge are a real asset — keep law firms as primary but let one person own insurance exploration.",
+        "D": "The law firm pipeline stalling is likely a sales execution problem, not a market signal — fix the outreach before concluding the vertical doesn't work."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 2,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Status Quo Bias",
+      "question": "Your six-person team runs all internal operations — task tracking, customer notes, async updates — through a combination of Notion and Slack threads that you set up in week two of the company. It's messy and things fall through the cracks, and two new hires have flagged it. A lightweight CRM and project tool would cost $400/month and take a week to migrate. Your co-founder says it's not worth the disruption. What do you do?",
+      "options": {
+        "A": "Switch tools — the cracks in your current setup are already costing you more than $400/month in founder time and dropped follow-ups.",
+        "B": "Don't switch yet; the real issue is process discipline, not tooling — adding a new system won't fix a culture of loose follow-through.",
+        "C": "Let the two new hires who raised the issue own an evaluation and migration proposal; if they're willing to drive it, the disruption cost is lower.",
+        "D": "Stick with what you have for now and invest a few hours in cleaning up the Notion structure — you can revisit tooling once the team hits 10 people."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 1,
+        "C": 2,
+        "D": 3
+      }
+    }
+  ],
+  "Dunning-Kruger Effect": [
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "You're about to lead your first serious procurement negotiation with a mid-market SaaS buyer — legal redlines, security questionnaires, and a procurement officer you've never dealt with before. Your co-founder suggests bringing in a part-time fractional sales advisor who has closed dozens of similar deals. How do you respond?",
+      "options": {
+        "A": "Agree to bring the advisor in for at least the legal and procurement stages — you know your product cold but enterprise buying process nuances are genuinely different from pitching.",
+        "B": "Decline for now; you've watched enough negotiation breakdowns at previous companies to know what traps to avoid, and adding a third voice could complicate the relationship.",
+        "C": "Decline — you've successfully closed your two existing deals yourself, and a fractional advisor signals to the buyer that your team lacks confidence or maturity.",
+        "D": "Agree in principle but limit their role to coaching you privately rather than joining calls, since you want to build this muscle yourself before you hire a full-time sales lead."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "Your team needs to migrate a critical data-ingestion pipeline from a third-party vendor to a custom-built solution. You've never architected something at this scale before, but you have strong opinions from your time as an individual contributor engineer. Your lead engineer estimates 10–12 weeks; you privately think it can be done in 5–6. What do you do?",
+      "options": {
+        "A": "Share your 5–6 week intuition openly with the team and ask them to pressure-test both estimates against a detailed task breakdown before committing to either.",
+        "B": "Accept your lead engineer's estimate — they are closer to the implementation complexity than you are, and your intuition is based on a smaller-scale version of this problem.",
+        "C": "Plan to the 10–12 week estimate externally but internally challenge the team to hit 6–7 weeks; stretch targets usually land somewhere in the middle and keep momentum high.",
+        "D": "Push back firmly on the 10–12 week estimate in your next planning session — in your experience, engineering teams instinctively pad timelines, and a tighter deadline surfaces real blockers faster."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 0,
+        "C": 2,
+        "D": 3
+      }
+    },
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "Your startup sells workflow automation to logistics companies. One of your co-founders, who handles customer success, is pushing hard to pursue inbound interest from two healthcare operations teams. You have no healthcare experience and know almost nothing about its regulatory or procurement environment. Your co-founder says the workflow problem is identical. How do you approach the decision?",
+      "options": {
+        "A": "Agree to run one structured discovery call but explicitly flag to your co-founder that the regulatory and procurement differences in healthcare could make this a very different sales motion than it appears — you want outside input before committing.",
+        "B": "Support the exploration fully — you've already solved a complex vertical problem once, and the pattern-matching skills that got you traction in logistics are transferable to any workflow-heavy industry.",
+        "C": "Decline the inbound interest for now and ask your co-founder to document the specific workflow pain these healthcare teams described — if it's genuinely identical, the evidence should be easy to articulate before you invest time.",
+        "D": "Agree to explore it but split the responsibility clearly: your co-founder owns the healthcare discovery while you stay focused on logistics — that way you don't dilute focus but keep optionality open."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 3,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "You closed your seed round $400K short of your target. You've never formally modelled a startup's cash position before, but you spent a weekend building a spreadsheet and concluded you have 18 comfortable months of runway. Your co-founder wants to pay a part-time CFO-for-hire to sense-check it before you decide on your hiring plan. What is your reaction?",
+      "options": {
+        "A": "Agree — an 18-month runway conclusion that turns out to be wrong at month 11 is an existential problem, and the cost of a one-time model review is trivial relative to the decision it's informing.",
+        "B": "Decline for now — your model is straightforward, and spending money on a financial reviewer when cash is already tight feels like exactly the wrong reflex; you'll revisit if the numbers feel off later.",
+        "C": "Agree, but only if your co-founder can find someone willing to do it as a short advisory engagement rather than a recurring role — you want a second opinion, not a dependency.",
+        "D": "Decline — you've stress-tested three scenarios in the model already and the logic holds across all of them; if a professional CFO were to find an error, it would most likely be a minor rounding issue rather than a structural one."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 1,
+        "D": 3
+      }
+    }
+  ]
+}

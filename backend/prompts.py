@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 from typing import Literal
 
 BIASES = [
@@ -54,6 +56,16 @@ BIASES = [
 ]
 
 BIAS_NAMES = [b["name"] for b in BIASES]
+
+# Pinned question sets — reviewed & committed so local and prod seed identical
+# content (no Claude re-gen). The generation prompt below is only for NEW categories.
+_SEED_DIR = Path(__file__).parent / "seed_data"
+ENTREPRENEUR_QUESTIONS: dict[str, list[dict]] = json.loads(
+    (_SEED_DIR / "entrepreneur_questions.json").read_text(encoding="utf-8")
+)
+EXECUTIVE_QUESTIONS: dict[str, list[dict]] = json.loads(
+    (_SEED_DIR / "executive_questions.json").read_text(encoding="utf-8")
+)
 
 # ---------------------------------------------------------------------------
 # Hardcoded trader questions — one set of 4 per bias, day-trading context
@@ -534,7 +546,16 @@ TRADER_QUESTIONS: dict[str, list[dict]] = {
 Level = Literal["Low", "Medium", "High"]
 
 
-def build_single_bias_prompt(bias: str, role: str = "entrepreneur") -> str:
+def build_single_bias_prompt(
+    bias: str, role: str = "entrepreneur", avoid_scenarios: list[str] | None = None
+) -> str:
+    """Prompt to generate 4 questions for a bias.
+
+    `avoid_scenarios` is the running list of scenario setups already used elsewhere
+    in the same assessment; passing it (and accumulating each call's returned
+    "scenario" tags) is what keeps a 40-question set from repeating the same
+    situation bias-to-bias. Reusable for any future generated role.
+    """
     if role == "trader":
         return f"""You are a behavioural psychologist designing a cognitive bias assessment for active day traders (FX, CFD, stocks, crypto).
 
@@ -559,23 +580,64 @@ Output ONLY a valid JSON array of exactly 4 objects — no markdown, no explanat
   }}
 ]"""
 
-    return f"""You are a behavioural psychologist designing a cognitive bias assessment for experienced professionals (founders, executives, investors).
+    avoid_block = "\n".join(f"  - {a}" for a in (avoid_scenarios or [])) \
+        or "  (none yet — this is the first set)"
+
+    if role == "executive":
+        return f"""You are a behavioural psychologist designing a cognitive bias assessment for experienced professionals (senior operators, executives, and VC/PE investors).
 
 Generate exactly 4 multiple-choice questions that test "{bias}".
 
 Requirements:
 - All 4 questions must specifically probe "{bias}" — but subtly, without naming it
-- Use senior decision-making scenarios: hiring/promotion, strategy, capital allocation, risk, board dynamics, evaluating people or data
+- Use senior decision-making scenarios: hiring/promotion, strategy, capital allocation, risk, board dynamics, evaluating people or data, portfolio decisions
+- VARIETY IS CRITICAL. Make all 4 scenarios concretely distinct from each other AND from the scenarios already used elsewhere in this assessment (listed below). Vary the protagonists, companies/sectors, and specifics. Do NOT default to a single stock setup.
+- Scenarios already used elsewhere in this assessment — do NOT reuse these or close variants:
+{avoid_block}
 - All 4 options (A-D) must sound equally reasonable and defensible to a senior professional
 - Questions must be subtle — do NOT signal what bias is being tested
 - Avoid textbook-style or obvious bias questions
 - Use non-linear scoring (0–3 per question, where 3 = strongest bias expression)
 - Occasionally invert expected patterns so that more "analytical" answers are not always lower-bias
-- The 4 questions should cover meaningfully different scenarios
 
-Output ONLY a valid JSON array of exactly 4 objects — no markdown, no explanation, no extra text:
+Output ONLY a valid JSON array of exactly 4 objects — no markdown, no explanation. Include a short "scenario" tag (4-8 words naming the situation) for each so variety can be checked:
 [
   {{
+    "scenario": "short tag naming the situation",
+    "bias": "{bias}",
+    "question": "...",
+    "options": {{ "A": "...", "B": "...", "C": "...", "D": "..." }},
+    "scoring": {{ "A": 2, "B": 0, "C": 3, "D": 1 }}
+  }}
+]"""
+
+    # default: entrepreneur — seed-stage startup founder
+    return f"""You are a behavioural psychologist designing a cognitive bias assessment for early-stage startup founders.
+
+The person taking this assessment is a co-founder of a small B2B software or AI startup. They recently raised a seed round and run the company with one or two co-founders and a few early hires. They've signed a handful of design partners, a few paid pilots, and one or two early enterprise deals — but they're still searching for product–market fit and still figuring out their business model and go-to-market strategy. They operate on limited runway under high uncertainty; every decision trades scarce time, money, and focus, and the founders make the calls themselves.
+
+Generate exactly 4 multiple-choice questions that test "{bias}".
+
+Requirements:
+- All 4 questions must specifically probe "{bias}" — but subtly, without naming it
+- Draw the 4 questions from across these decision areas (a menu to vary across — do NOT force all of them, and do NOT use the same area twice within this set):
+  • Product & roadmap — what to build next, whose feedback to weight, scope creep, technical-debt vs speed, deprecating something
+  • Customers, pilots & sales — enterprise vs focus, discounting/scope, reading pilot signal, churn, pricing/monetisation, a demanding customer
+  • Fundraising & runway — burn, raise timing, spending scarce cash, an investor/advisor's opinion, a bridge/extension
+  • Hiring, team & founder mindset — a first key hire, a co-founder disagreement, delegation, a competitor move, persist-vs-pivot, and (occasionally) an underperforming early employee you've been slow to act on
+- VARIETY IS CRITICAL. Make all 4 scenarios concretely distinct from each other AND from the scenarios already used elsewhere in this assessment (listed below). Vary the protagonists, company types/sectors, deal sizes, and specifics. Do NOT default to a single stock setup (for example "a vocal design partner requesting features" or "performance-managing an underperforming hire") — reach for fresh, specific situations a real seed-stage founder faces.
+- Scenarios already used elsewhere in this assessment — do NOT reuse these or close variants:
+{avoid_block}
+- Keep the stakes founder-sized: small team, limited cash, no formal board or CFO. AVOID boardroom, M&A, capital-allocation, portfolio-company or VC-investor framing.
+- Reflect the AI-startup reality where relevant: an unproven business model, an evolving GTM motion, hype vs durable demand.
+- All 4 options (A-D) must sound equally reasonable and defensible to a thoughtful founder
+- Questions must be subtle — do NOT signal what bias is being tested
+- Use non-linear scoring (0–3 per question, where 3 = strongest bias expression); occasionally invert so more "analytical" answers are not always lower-bias
+
+Output ONLY a valid JSON array of exactly 4 objects — no markdown, no explanation. Include a short "scenario" tag (4-8 words naming the situation) for each so variety can be checked:
+[
+  {{
+    "scenario": "short tag naming the situation",
     "bias": "{bias}",
     "question": "...",
     "options": {{ "A": "...", "B": "...", "C": "...", "D": "..." }},

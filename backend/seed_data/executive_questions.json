@@ -1,0 +1,662 @@
+{
+  "Confirmation Bias": [
+    {
+      "bias": "Confirmation Bias",
+      "question": "You championed a senior hire six months ago despite mild reservations from two board members. Recent performance data is mixed — some strong quarters, one notable miss. Your chair asks you to prepare an honest assessment. What is your first instinct?",
+      "options": {
+        "A": "Pull together all performance data chronologically and present it without framing, letting the numbers speak",
+        "B": "Identify the structural and market factors that contributed to the miss before attributing it to the individual",
+        "C": "Start by documenting the wins and trajectory improvements to contextualize the miss as an outlier",
+        "D": "Reach out to the hire directly to understand their own read on the miss before forming a view"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 2,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Confirmation Bias",
+      "question": "Your fund's thesis on a portfolio company assumed rapid enterprise adoption. Two years in, growth is slower than projected but the founding team is exceptional and product NPS is high. A junior analyst presents a revised model showing the TAM may have been overestimated. How do you engage with the analysis?",
+      "options": {
+        "A": "Ask the analyst to also model upside scenarios where adoption accelerates post a specific catalyst you've identified",
+        "B": "Commission an independent market sizing study before changing your internal view on the company",
+        "C": "Treat the revised model as the new working assumption and update portfolio expectations accordingly",
+        "D": "Stress-test the analyst's methodology — TAM estimation varies significantly by segmentation approach"
+      },
+      "scoring": {
+        "A": 3,
+        "B": 2,
+        "C": 0,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Confirmation Bias",
+      "question": "You are evaluating two internal candidates for a critical VP role. Candidate A fits the profile you envisioned precisely; Candidate B has an unconventional background but strong peer endorsements. During structured interviews, Candidate B gives a sharper answer to your most important question. What shapes your next step most?",
+      "options": {
+        "A": "Weight the interview responses heavily — a single well-constructed answer to a key question is meaningful signal",
+        "B": "Add a second-round case exercise designed around the core challenges of the VP role for both candidates",
+        "C": "Revisit Candidate A's full file to see whether preparation or context might explain the performance gap",
+        "D": "Seek informal references on Candidate B to verify whether the peer endorsements reflect consistent performance"
+      },
+      "scoring": {
+        "A": 0,
+        "B": 1,
+        "C": 3,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Confirmation Bias",
+      "question": "Your company has been running a geographic expansion strategy for 18 months. An external consultancy delivers a report with mixed findings — three markets are outperforming, two are significantly underperforming. Your leadership team's reaction in the subsequent discussion will most resemble which of the following?",
+      "options": {
+        "A": "The team spends most of the session analyzing why the three outperforming markets succeeded and how to replicate the model",
+        "B": "The team requests a deeper diagnostic on the two underperforming markets before drawing strategic conclusions",
+        "C": "The team debates whether the consultancy's benchmarks are appropriate given your specific business model",
+        "D": "The team treats the mixed results as validating a selective rollout approach and plans to double down on winners"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 1,
+        "D": 3
+      }
+    }
+  ],
+  "Anchoring Bias": [
+    {
+      "bias": "Anchoring Bias",
+      "question": "Your board approved a $40M budget for an acquisition target last quarter. Due diligence has since revealed significant integration risks, and your CFO now recommends a revised ceiling of $28M. A competing bidder is rumored to be preparing an offer. How do you proceed?",
+      "options": {
+        "A": "Authorize up to $32M — a meaningful reduction from the original figure that still signals competitive intent and accounts for some of the identified risks",
+        "B": "Adopt the CFO's $28M ceiling as the new ceiling and build the bid strategy entirely around that number, treating the original approval as irrelevant",
+        "C": "Counter-propose $35M to the board, framing it as a responsible compromise between the approved budget and the CFO's conservative position",
+        "D": "Pause the bid process entirely until integration risk can be modeled with greater precision, regardless of competitive pressure"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Anchoring Bias",
+      "question": "You are interviewing a candidate for a senior VP role. Their previous employer paid them $310,000 in total compensation. Your internal band for the role tops out at $270,000. After a strong interview, how do you think about the offer?",
+      "options": {
+        "A": "Present an offer at the top of the internal band — $270,000 — and frame it around role scope and equity upside rather than their prior comp",
+        "B": "Explore whether the role can be re-leveled or the band formally reviewed, treating prior comp as useful market data rather than a constraint or target",
+        "C": "Open at $285,000 with board approval, reasoning that losing a strong candidate over $15,000 above band would be a poor trade-off given replacement costs",
+        "D": "Open at $260,000 to preserve negotiation room toward the $270,000 ceiling, mentally benchmarking each counter against the $310,000 figure they came in with"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 0,
+        "C": 2,
+        "D": 3
+      }
+    },
+    {
+      "bias": "Anchoring Bias",
+      "question": "A portfolio company you backed at a $120M valuation is raising a new round. The lead term sheet values them at $95M — a down round. The founders push back citing comparable transactions. How do you evaluate the $95M figure?",
+      "options": {
+        "A": "Treat $95M as a credible market signal from an informed external party, and assess whether it reflects true fundamental value independent of your entry price",
+        "B": "Request an independent fairness opinion, using the $120M entry valuation as a baseline against which to stress-test the new investor's methodology",
+        "C": "Focus primarily on whether the new lead investor's model assumptions differ materially from yours at entry — using your $120M thesis as the reference framework",
+        "D": "Negotiate toward a $108M structured round with ratchets, treating the gap between $95M and $120M as the primary problem to be bridged"
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Anchoring Bias",
+      "question": "Your strategy team presents two market-entry scenarios. Scenario A projects $180M revenue in year three. Scenario B, a more conservative path, projects $95M. Both carry distinct risk profiles. A board member opens discussion by calling Scenario A 'the real ambition benchmark.' How does this affect your deliberation?",
+      "options": {
+        "A": "You notice the framing and deliberately structure the discussion around risk-adjusted NPV for each scenario before revenue figures are revisited",
+        "B": "You use $180M as an implicit success threshold when stress-testing Scenario B, asking the team how much of that gap could realistically be closed",
+        "C": "You redirect the board to evaluate each scenario on its own strategic merits, explicitly setting aside the $180M figure until assumptions are validated",
+        "D": "You probe whether a hybrid path could capture $130M–$150M in revenue, treating the range between the two projections as the natural solution space"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 3,
+        "C": 0,
+        "D": 2
+      }
+    }
+  ],
+  "Availability Heuristic": [
+    {
+      "bias": "Availability Heuristic",
+      "question": "Your portfolio company is considering entering the drone delivery market. Last quarter, a high-profile drone incident received extensive media coverage and sparked regulatory scrutiny across the industry. How does this factor into your assessment of the opportunity?",
+      "options": {
+        "A": "The incident is relevant signal — regulators rarely reverse course once they intervene, so timing risk is structurally elevated",
+        "B": "Media coverage of a single incident likely overstates systemic risk; I'd weight actuarial data on operational failures and regulatory trajectories more heavily than the recent news cycle",
+        "C": "The coverage makes it clear the regulatory environment has fundamentally shifted — this is no longer a viable near-term bet regardless of underlying unit economics",
+        "D": "I'd use the incident as a negotiating lever to reprice the deal, since perceived risk has increased even if actual risk hasn't materially changed"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Availability Heuristic",
+      "question": "You are deciding between two candidates for a CFO role. Candidate A comes from a company that recently had a well-publicized accounting scandal (though she was not implicated). Candidate B has a clean public record but weaker references from former peers. How do you proceed?",
+      "options": {
+        "A": "The scandal at Candidate A's prior firm warrants deeper diligence into her tenure there — even if she wasn't implicated, cultural exposure matters",
+        "B": "Weak peer references on Candidate B are a more reliable signal of actual leadership fit than Candidate A's proximity to a publicized event she wasn't involved in",
+        "C": "Candidate A's association with a scandal creates reputational risk for the company regardless of her personal conduct — this is a practical board-level consideration, not a bias",
+        "D": "I'd run parallel structured reference checks on both and weight findings equally, bracketing the scandal as external noise unless diligence surfaces direct involvement"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 1,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Availability Heuristic",
+      "question": "Your leadership team is debating whether to expand into Southeast Asia. Two board members recently attended a conference where several founders described painful market entry failures in the region. How should this inform the discussion?",
+      "options": {
+        "A": "Conference anecdotes are self-selected for drama — I'd commission a structured analysis of entry outcomes across comparable companies before drawing directional conclusions",
+        "B": "Experienced founders sharing recent failures is exactly the kind of ground-level intelligence that market research often misses — it should carry significant weight",
+        "C": "The fact that multiple founders independently described failures suggests a real pattern; I'd treat the region as high-risk until we identify what specifically went wrong in each case",
+        "D": "The stories are useful for identifying specific failure modes to pressure-test, but shouldn't shift our prior on overall opportunity without knowing the base rate of success versus failure in similar expansions"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 3,
+        "C": 2,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Availability Heuristic",
+      "question": "A senior engineer on your team was the technical lead on a project that failed visibly eighteen months ago. She is now the top internal candidate for a VP of Engineering role. How do you think about her candidacy?",
+      "options": {
+        "A": "A visible failure at the technical leadership level is directly relevant experience data for a VP role — how she navigated it tells you more than a clean record would",
+        "B": "The failure is recent enough that it meaningfully raises the question of whether she has fully developed the judgment needed for a broader scope of accountability",
+        "C": "I'd want to understand specifically what failed and why before letting the outcome itself influence my read — execution failures and judgment failures require very different responses",
+        "D": "Internal candidates with recent high-visibility failures often face disproportionate skepticism; I'd deliberately benchmark her against the same criteria I'd apply to an external hire to avoid letting recency distort the evaluation"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 3,
+        "C": 0,
+        "D": 2
+      }
+    }
+  ],
+  "Overconfidence Bias": [
+    {
+      "bias": "Overconfidence Bias",
+      "question": "You are evaluating two finalists for a critical VP of Sales role. Your gut strongly favors Candidate A based on a 45-minute interview, but the structured assessment scores favor Candidate B. How do you proceed?",
+      "options": {
+        "A": "Go with Candidate A — at my level, pattern recognition from interviews is a legitimate and well-calibrated signal that assessments often miss.",
+        "B": "Go with Candidate B, but schedule a second interview to stress-test the assessment findings before finalizing.",
+        "C": "Go with Candidate A, but design their onboarding to compensate for the gaps the assessment flagged — I know how to get the best out of people.",
+        "D": "Pause the process and ask the assessment provider to walk me through the methodology before making a final call."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 1,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Overconfidence Bias",
+      "question": "Your company is about to enter a new market. Internal analysis projects a 70% probability of capturing meaningful share within 18 months. A respected external consultant estimates 35%. How do you weight these inputs in your go/no-go decision?",
+      "options": {
+        "A": "Weight the internal estimate more heavily — the team has context and operational knowledge the consultant simply doesn't have access to.",
+        "B": "Average the two estimates and build a scenario model around the midpoint to stress-test capital requirements.",
+        "C": "Treat the internal estimate as the base case but allocate contingency resources as though the consultant's estimate is correct.",
+        "D": "Commission a third independent analysis before committing capital — two divergent expert views signal genuine uncertainty that hasn't been resolved."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 2,
+        "C": 1,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Overconfidence Bias",
+      "question": "A board member questions your three-year revenue forecast, suggesting the assumptions around customer retention are optimistic given current market conditions. How do you respond in the meeting?",
+      "options": {
+        "A": "Acknowledge the concern, table the forecast, and propose a working session to rebuild the retention assumptions collaboratively before the next board meeting.",
+        "B": "Walk the board through the proprietary customer data and operational indicators that informed the assumptions — you are confident the model reflects ground truth your team is uniquely positioned to see.",
+        "C": "Accept the pushback publicly, but internally you maintain conviction in the forecast and plan to revisit the conversation once early quarterly data confirms your trajectory.",
+        "D": "Propose running a sensitivity analysis on the retention assumptions in real time and invite the board member to identify which specific inputs they would adjust."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Overconfidence Bias",
+      "question": "You personally led a due diligence process on an acquisition target and recommended proceeding. Post-close, integration has underperformed against every synergy projection. How do you interpret this outcome?",
+      "options": {
+        "A": "The core thesis was sound — execution challenges post-close were driven by factors that emerged after signing and were not reasonably foreseeable during diligence.",
+        "B": "The diligence process likely had blind spots that the outcome has now revealed — you commission a structured post-mortem to identify which assumptions failed and why.",
+        "C": "Markets shifted after close in ways that invalidated the synergy model — the decision was correct given the information available at the time.",
+        "D": "The underperformance reflects integration execution gaps rather than a flawed investment thesis, so the focus should be on fixing operations rather than revisiting the original decision."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 1,
+        "D": 3
+      }
+    }
+  ],
+  "Loss Aversion": [
+    {
+      "bias": "Loss Aversion",
+      "question": "Your company's highest-revenue product line is showing a 12% year-over-year decline. A rigorous market analysis suggests this decline is structural, not cyclical. A promising new product could absorb the freed-up capital and team bandwidth, but would require sunsetting the legacy line entirely. How do you proceed?",
+      "options": {
+        "A": "Commission a second independent analysis before making any capital reallocation decisions — the stakes are too high to act on a single study.",
+        "B": "Begin a phased wind-down of the legacy line over 18 months while piloting the new product with a ring-fenced budget.",
+        "C": "Increase investment in the legacy line to stabilize it first — walking away from established revenue before the new product is proven is operationally reckless.",
+        "D": "Reallocate capital to the new product immediately and accept that some short-term revenue disruption is the cost of strategic repositioning."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 2,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Loss Aversion",
+      "question": "You are a lead investor reviewing two portfolio companies at the same funding stage. Company A is underperforming against plan but has strong brand equity you helped build. Company B is outperforming but is a newer position with less relational history. You have discretionary reserves to deploy into one. Where do you allocate?",
+      "options": {
+        "A": "Allocate to Company A — protecting and potentially recovering a struggling investment often yields better portfolio-level returns than doubling down on momentum plays.",
+        "B": "Allocate to Company B — follow the performance signal regardless of how much has already been invested in either relationship.",
+        "C": "Split the reserves equally to avoid concentrating risk at an uncertain inflection point for both companies.",
+        "D": "Allocate to Company A, but condition the capital on hitting a specific 60-day operational milestone to enforce accountability."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Loss Aversion",
+      "question": "A senior leader on your executive team has been in role for three years. Early results were strong, but the last 18 months show consistent underperformance relative to peers. Internally, this person is well-liked and their departure would create visible disruption. An external candidate has emerged who your board's talent advisor rates significantly higher. What is your next move?",
+      "options": {
+        "A": "Begin a confidential search process for the external candidate while giving the incumbent a clearly scoped 90-day performance window — run both tracks simultaneously.",
+        "B": "Have a direct conversation with the incumbent, clearly name the performance gap, and set a structured improvement plan with defined consequences before considering replacement.",
+        "C": "Move decisively to transition the incumbent out — sustained underperformance at the executive level compounds, and the cost of delay typically exceeds the cost of disruption.",
+        "D": "Retain the incumbent through the current business cycle — replacing a known quantity with an external hire introduces execution risk that is difficult to quantify."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 2,
+        "C": 0,
+        "D": 3
+      }
+    },
+    {
+      "bias": "Loss Aversion",
+      "question": "Your company entered a strategic market three years ago with significant investment. Traction has been marginal and competitive dynamics have shifted unfavorably. Exiting now would mean recognizing a material write-down and a public narrative of retreat. A credible internal team believes a focused 12-month push could turn performance around. How do you frame your board recommendation?",
+      "options": {
+        "A": "Recommend a defined 12-month extension with hard exit triggers pre-agreed by the board — this removes the emotional decision from a future moment of pressure.",
+        "B": "Recommend immediate exit — the write-down is painful but preserving capital and leadership bandwidth for higher-conviction opportunities is the correct risk-adjusted decision.",
+        "C": "Recommend the 12-month push without pre-committing to exit triggers, as locking in early constraints could undermine the team's execution confidence and strategic flexibility.",
+        "D": "Recommend a structured strategic review over 60 days before bringing a formal recommendation to the board — exiting or doubling down without that process creates governance exposure."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 0,
+        "C": 3,
+        "D": 2
+      }
+    }
+  ],
+  "Sunk Cost Fallacy": [
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "You promoted a senior director 18 months ago after championing their candidacy to the board. Since then, their team's output has declined, two strong performers have resigned citing leadership issues, and their last two strategic initiatives missed targets. A peer executive suggests an honest reassessment of fit. How do you respond?",
+      "options": {
+        "A": "Acknowledge the performance data is concerning, but argue that leadership transitions typically take 18–24 months to stabilize and you should give it more time before drawing conclusions.",
+        "B": "Agree to a structured reassessment, treating this person the same way you would evaluate any executive who had joined externally with this track record.",
+        "C": "Push back on the reassessment, noting that the director has deep institutional knowledge that would be extremely costly to lose right now given current priorities.",
+        "D": "Propose a formal 90-day improvement plan with clear metrics, reasoning that you owe it to someone you sponsored to give them a defined path before any structural decisions."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "Your firm has deployed $40M over three years into a vertical SaaS company. The market has structurally shifted, two better-capitalized competitors have emerged, and the founding team privately acknowledges they are unlikely to reach the return threshold that justifies further investment. The board is discussing a bridge round. What is your position?",
+      "options": {
+        "A": "Decline to participate in the bridge, redirect your energy to helping the founders explore strategic acqui-hire or asset sale options that recover some value now.",
+        "B": "Support a small bridge only if it is contingent on a specific near-term catalyst — a signed enterprise contract or acquisition term sheet — rather than operational runway alone.",
+        "C": "Advocate for the bridge on the basis that $40M already deployed means the firm has both the obligation and the credibility to see this through a critical inflection window.",
+        "D": "Commission an independent market analysis before the bridge decision to ensure the competitive shift assessment is accurate and not driven by short-term pessimism."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 1,
+        "C": 3,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "Your company spent two years and approximately $6M building a proprietary data infrastructure platform internally. A third-party vendor now offers a solution that is measurably superior in capability, cheaper to maintain, and integrates in weeks. Your CTO recommends migrating. Your VP of Engineering, who led the internal build, argues against it. How do you weigh in?",
+      "options": {
+        "A": "Side with the CTO on the merits, treating the $6M and two years as decisions that cannot be changed and are therefore irrelevant to the forward-looking cost-benefit analysis.",
+        "B": "Ask both parties to co-author a migration risk assessment, ensuring the VP of Engineering's institutional knowledge informs the transition plan rather than the decision itself.",
+        "C": "Pause the decision to allow the internal team six months to close the capability gap, on the grounds that abandoning a two-year investment without exhausting internal options sets a damaging precedent.",
+        "D": "Approve a limited pilot migration for one business unit to empirically test integration complexity and team adoption before committing to a full platform switch."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 1,
+        "C": 3,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Sunk Cost Fallacy",
+      "question": "You have spent the past eight months personally negotiating a complex international partnership that required significant legal, travel, and executive time. Due diligence has now surfaced regulatory exposure in the partner's core market that your general counsel rates as material and unresolved. The partner is unwilling to restructure the deal terms to address it. What do you do?",
+      "options": {
+        "A": "Walk away from the deal, accepting that the eight months of effort and associated costs are not a valid input into a decision that is now purely about forward risk exposure.",
+        "B": "Escalate to the board for a final decision, transparently presenting both the regulatory risk and the full cost of negotiation to date so they can weigh the complete picture.",
+        "C": "Push for a 60-day extension to bring in specialist regulatory counsel, reasoning that the depth of prior investment justifies exhausting every avenue before termination.",
+        "D": "Propose closing the deal with a contractual indemnification clause from the partner covering the identified regulatory exposure, as a compromise that preserves the partnership."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 2,
+        "C": 3,
+        "D": 1
+      }
+    }
+  ],
+  "Halo Effect": [
+    {
+      "bias": "Halo Effect",
+      "question": "You are evaluating a potential Series B investment. The founder previously built and sold a company to a top-tier acquirer at a strong multiple. The current venture is in a different sector where the founder has limited operating experience, and early metrics are mixed. How do you weight this information?",
+      "options": {
+        "A": "The prior exit is meaningful signal — execution ability and founder judgment tend to transfer across domains, so I give it significant weight in my overall conviction.",
+        "B": "I treat the prior exit as one data point among many and stress-test the sector-specific gaps as a distinct risk category with equal analytical weight.",
+        "C": "A proven founder who has navigated a full cycle is rare — I'm willing to accept weaker early metrics precisely because I trust the person behind the numbers.",
+        "D": "I discount the prior exit somewhat since different sectors have structural differences that can neutralize even strong founder instincts."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 0,
+        "C": 3,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Halo Effect",
+      "question": "A senior executive at your firm is widely respected for leading a landmark product launch three years ago. She is now being considered for a Chief Strategy Officer role, but peer feedback from recent cross-functional projects has been consistently lukewarm about her collaborative style and strategic clarity. How do you approach the promotion decision?",
+      "options": {
+        "A": "The landmark launch reflects a level of strategic and executional capability that is genuinely rare — I weight it heavily and view the peer feedback as potentially reflecting political friction rather than real deficiencies.",
+        "B": "I commission a structured 360 review specifically scoped to the CSO competencies, treating the prior success and recent feedback as separate, independent evidence streams.",
+        "C": "Sustained peer feedback patterns are more predictive of future behavior than a single past event, so I prioritize the recent signals even at the cost of discounting a strong legacy win.",
+        "D": "I hold a candid performance conversation with her to understand whether the recent feedback reflects a temporary context or a deeper pattern before forming a view."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Halo Effect",
+      "question": "Your board is reviewing a strategic partnership proposal brought forward by a division head who has an exceptional track record. The proposal has not been modeled rigorously and contains several assumptions that have not been stress-tested. How does the board proceed?",
+      "options": {
+        "A": "Given his record, the board approves a conditional term sheet and asks the team to finalize the modeling in parallel — his judgment has earned a degree of pre-authorization.",
+        "B": "The board requests a full financial model and assumption audit before any commitment, applying the same diligence standard it would to any proposal regardless of sponsor.",
+        "C": "The board acknowledges the track record but explicitly notes in the discussion that proposal quality must stand independently of who brought it — and holds it to that standard.",
+        "D": "The board asks a separate internal team to build the model independently so that the division head's narrative framing does not anchor the financial assumptions."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 2,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Halo Effect",
+      "question": "You are interviewing a candidate for a critical risk management role. She comes from a highly prestigious firm with a gold-standard reputation for analytical rigor. During the interview, her answers are fluent and confident but remain largely conceptual — she struggles to walk through a specific past risk event in granular operational detail. How do you interpret this?",
+      "options": {
+        "A": "Granular operational recall in an interview context is not always a reliable proxy for actual capability — her background from that firm is itself a strong filter, and I weight that accordingly.",
+        "B": "I note the gap between fluency and operational specificity as a meaningful signal and schedule a structured case-based second interview to probe technical depth independently.",
+        "C": "Strong communication and conceptual fluency are genuinely valuable in a risk management role — the inability to recall specific events may reflect appropriate confidentiality norms rather than shallow experience.",
+        "D": "I adjust my line of questioning in real time to probe a different past scenario, trying to distinguish between recall difficulty and actual depth of experience before drawing conclusions."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    }
+  ],
+  "Framing Effect": [
+    {
+      "bias": "Framing Effect",
+      "question": "Your CFO presents two options for a capital reallocation decision during a board meeting. Option 1: 'We preserve $40M in capital with certainty.' Option 2: 'We have a 60% chance of preserving the full $65M, but a 40% chance of preserving nothing.' A week later, your strategy team reframes the same decision: Option 1: 'We accept a guaranteed loss of $25M.' Option 2: 'We take a 40% risk of losing the entire $65M, with a 60% chance of losing nothing.' How do you proceed?",
+      "options": {
+        "A": "I would choose Option 1 in the first meeting and Option 2 in the second — the framing shifts my read on where the real risk lies",
+        "B": "I would choose Option 2 both times — probabilistic upside is more strategically defensible regardless of how it is presented",
+        "C": "I would choose Option 1 both times — certainty of preservation is the priority when capital is this significant",
+        "D": "I would pause and recognize these are the same decision, then run a consistent expected-value analysis before choosing"
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 2,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Framing Effect",
+      "question": "You are evaluating two senior candidates for a COO role. Your head of talent tells you: 'Candidate A has succeeded in 7 out of 10 operational turnarounds.' Your board advisor, separately, describes Candidate B as: 'Someone who has struggled or failed in 3 out of 10 turnarounds, but has led the same volume of engagements.' Assuming all other factors are equal, how do you weight this information?",
+      "options": {
+        "A": "Candidate A feels like the stronger operator — a 70% success rate signals proven execution capability",
+        "B": "They appear statistically equivalent; I would dig into the nature of the 3 failures before forming any view on Candidate B",
+        "C": "Candidate B's framing raises a flag — leaders who are described through their failures tend to be positioned that way for a reason",
+        "D": "I would request identical performance narratives from the same source before comparing the two candidates at all"
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 2,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Framing Effect",
+      "question": "Your portfolio company is considering a market expansion. The internal strategy memo states: 'This market has an 85% adoption rate among our target segment.' A competing analysis from an external advisor reads: 'Roughly 1 in 7 of your target customers has not adopted this category.' Both figures come from the same underlying dataset. How does this affect your strategic recommendation to the CEO?",
+      "options": {
+        "A": "The 85% adoption figure confirms meaningful market penetration — I would encourage the expansion with a focused go-to-market",
+        "B": "The 1-in-7 non-adopter framing surfaces a residual opportunity that the headline figure obscures — I would investigate the holdout segment before recommending",
+        "C": "Both framings describe the same market reality; I would look past the numbers and focus on competitive dynamics and unit economics",
+        "D": "The discrepancy between how internal and external advisors frame the same data signals misaligned incentives — I would address that before the strategic question"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 3,
+        "C": 0,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Framing Effect",
+      "question": "During a performance review cycle, your CHRO flags a high-potential VP: 'She's in the top 15% of her peer cohort on execution metrics.' Later in the same meeting, when discussing succession risk, an operating partner notes: 'She ranks outside the top 80 percentile on cross-functional influence scores.' How do you factor this person into your succession plan?",
+      "options": {
+        "A": "The execution ranking is the stronger signal for an operational succession role — I weight it more heavily than influence scores at this stage",
+        "B": "Being outside the top 80th percentile on influence is a meaningful gap for a senior leader — it tempers my confidence in her readiness",
+        "C": "I recognize these are complementary data points, not contradictory ones, and would map both against the specific requirements of the succession role",
+        "D": "I would first clarify whether the two metrics were drawn from comparable peer groups before forming any succession view"
+      },
+      "scoring": {
+        "A": 2,
+        "B": 3,
+        "C": 1,
+        "D": 0
+      }
+    }
+  ],
+  "Status Quo Bias": [
+    {
+      "bias": "Status Quo Bias",
+      "question": "Your company's Series B investor deck has used the same narrative structure and financial framing for three rounds. A new CFO suggests rebuilding it around unit economics rather than revenue trajectory, arguing the investor landscape has shifted. Your lead banker agrees it's a stronger story for current market conditions. What do you do?",
+      "options": {
+        "A": "Rebuild the deck around unit economics as suggested — if the banker and CFO align, the signal is strong enough to act",
+        "B": "Run both versions past two or three target investors informally before committing to a structural change this close to a raise",
+        "C": "Retain the existing structure but integrate unit economics as a supporting section — the narrative has worked before and investor relationships carry the existing framing",
+        "D": "Commission a proper competitive benchmarking of how comparable companies at your stage are currently positioning before making any changes"
+      },
+      "scoring": {
+        "A": 0,
+        "B": 1,
+        "C": 3,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Status Quo Bias",
+      "question": "A high-performing VP has been in role for four years. A board member flags that the scope of the role has grown significantly and the compensation is now 30% below market for the actual responsibilities being carried. The VP has not raised it. How do you handle this?",
+      "options": {
+        "A": "Proactively adjust compensation to market rate without waiting for the VP to raise it — the gap creates retention risk and is a leadership obligation to address",
+        "B": "Schedule a structured review cycle for the role and use that as the natural moment to recalibrate — jumping ahead of the cycle sets a difficult precedent",
+        "C": "Have an informal conversation to gauge the VP's satisfaction and use their response to determine whether a formal adjustment is warranted",
+        "D": "Commission a comp benchmarking study across all VP-level roles before making any individual adjustments to ensure internal equity is maintained"
+      },
+      "scoring": {
+        "A": 0,
+        "B": 3,
+        "C": 2,
+        "D": 1
+      }
+    },
+    {
+      "bias": "Status Quo Bias",
+      "question": "Your portfolio company has been operating on a direct sales model for five years. New data shows a self-serve PLG motion is converting at 2.4x the rate of sales-assisted deals at comparable ACVs in your sector. The founding team is resistant, citing the relationships and institutional knowledge built in the sales org. As a board member, what position do you take?",
+      "options": {
+        "A": "Push the board to set a formal 12-month pilot with defined conversion benchmarks for PLG — the data is directional enough to warrant a structured test with accountability",
+        "B": "Acknowledge the data but support the founding team's read — they have operating context the benchmarks can't fully capture, and disrupting a functioning sales culture carries real execution risk",
+        "C": "Recommend hiring a PLG-experienced operator into a parallel track role to build the motion without dismantling the existing sales infrastructure",
+        "D": "Request a deeper segmentation of the conversion data by ICP before taking a board position — sector-level comparisons may not hold at this company's specific customer profile"
+      },
+      "scoring": {
+        "A": 1,
+        "B": 3,
+        "C": 0,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Status Quo Bias",
+      "question": "You are evaluating two finalists for a Chief of Staff role. Candidate A has a background almost identical to your previous Chief of Staff, who was highly effective. Candidate B has an unconventional profile — strong outcomes, but in contexts that don't map cleanly to your current operating environment. Both cleared your panel interviews with comparable scores. How do you decide?",
+      "options": {
+        "A": "Select Candidate A — pattern-matching on a proven profile is a rational heuristic when both candidates are otherwise equivalent on interview performance",
+        "B": "Run a structured work simulation for both candidates specifically designed around the novel challenges in your current operating environment before deciding",
+        "C": "Select Candidate B — if scores are equivalent, the asymmetric upside of an unconventional profile in a changing environment outweighs the familiarity premium of Candidate A",
+        "D": "Return to the panel to explicitly pressure-test whether the scoring equivalence held up across the dimensions most critical to the role's current demands, not its historical demands"
+      },
+      "scoring": {
+        "A": 3,
+        "B": 1,
+        "C": 0,
+        "D": 2
+      }
+    }
+  ],
+  "Dunning-Kruger Effect": [
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "You've just joined a new board as an independent director. The company operates in a sector adjacent to your primary expertise. In your second meeting, the CEO presents a complex operational restructuring plan. What is your most likely contribution at this stage?",
+      "options": {
+        "A": "Ask clarifying questions focused on assumptions you don't yet have full context to evaluate, and reserve judgment until you've spoken with management privately.",
+        "B": "Draw on your cross-industry pattern recognition to offer a pointed strategic perspective — fresh eyes often catch what insiders miss.",
+        "C": "Propose a specific alternative restructuring model based on what has worked in your own sector, recommending the board consider it seriously before proceeding.",
+        "D": "Acknowledge the limits of your current context explicitly, signal areas where you'd want deeper diligence, and defer substantive challenge to domain-fluent board members for now."
+      },
+      "scoring": {
+        "A": 1,
+        "B": 2,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "Your firm is evaluating an investment in a highly technical deep-tech startup. You've reviewed the pitch deck thoroughly and done one call with the founders. A domain expert consultant your team engaged has flagged significant technical risk in the core architecture. How do you proceed?",
+      "options": {
+        "A": "Weight the consultant's concerns heavily and commission a second independent technical review before advancing the deal.",
+        "B": "Trust your own read of the founders' credibility and market timing — technical risks at this stage are often overstated by experts who lack commercial perspective.",
+        "C": "Have the founders respond directly to the consultant's concerns in writing, and use that exchange to stress-test both the technical thesis and the team's intellectual honesty.",
+        "D": "Discount the consultant's input partially — you've seen enough pitches to know when a team has the right instincts, and this one does."
+      },
+      "scoring": {
+        "A": 0,
+        "B": 3,
+        "C": 1,
+        "D": 2
+      }
+    },
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "You are evaluating two internal candidates for a critical VP of Engineering role. Candidate A is highly articulate, presents confidently, and clearly maps problems to frameworks you recognize. Candidate B gives more hedged answers, frequently says 'it depends,' and defers to team input more often. Who do you advance and why?",
+      "options": {
+        "A": "Candidate A — decisiveness and clear communication are essential at the VP level, and the ability to project confidence signals leadership readiness.",
+        "B": "Candidate B — the hedged answers and collaborative instincts suggest deeper domain awareness and intellectual honesty, which are harder to develop than presentation skills.",
+        "C": "Candidate A — their ability to map complexity to recognized frameworks suggests strong strategic thinking and cross-functional effectiveness.",
+        "D": "Neither, without a structured technical assessment — articulation and confidence in interviews are weakly correlated with actual engineering leadership performance."
+      },
+      "scoring": {
+        "A": 2,
+        "B": 1,
+        "C": 3,
+        "D": 0
+      }
+    },
+    {
+      "bias": "Dunning-Kruger Effect",
+      "question": "Your company is entering a new geographic market. You led a successful expansion into a different region three years ago. The head of strategy presents data suggesting this new market has meaningfully different regulatory, cultural, and competitive dynamics. How do you calibrate your involvement in the go-to-market decisions?",
+      "options": {
+        "A": "Take an active directing role — you've navigated expansion complexity before and the core strategic levers are largely transferable across markets.",
+        "B": "Define the strategic parameters and resource envelope, but explicitly staff the execution with people who have direct experience in this specific market and give them real authority.",
+        "C": "Use your prior expansion as a baseline model and adapt it to local nuances based on the strategy team's inputs, retaining final call on key decisions.",
+        "D": "Treat this as a substantially new problem — bring in an external market entry advisor with regional expertise before committing to any go-to-market structure."
+      },
+      "scoring": {
+        "A": 3,
+        "B": 0,
+        "C": 2,
+        "D": 1
+      }
+    }
+  ]
+}

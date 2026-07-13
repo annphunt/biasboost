@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-type Role = "entrepreneur" | "trader";
+type Role = "entrepreneur" | "trader" | "executive";
+
+const ROLES: Role[] = ["entrepreneur", "trader", "executive"];
 
 const LABEL: Record<Role, string> = {
   entrepreneur: "Entrepreneur",
   trader: "Trader",
+  executive: "Executive",
 };
 
 export default function PersonaToggle() {
@@ -22,8 +25,6 @@ export default function PersonaToggle() {
   }, []);
 
   if (!role) return null;
-
-  const other: Role = role === "entrepreneur" ? "trader" : "entrepreneur";
 
   async function confirmSwitch() {
     if (!pending) return;
@@ -53,7 +54,7 @@ export default function PersonaToggle() {
       <div className="flex items-center gap-2">
         <span className="text-xs text-slate-400 hidden sm:inline">Testing as</span>
         <div className="flex rounded-lg border border-slate-200 overflow-hidden text-xs font-medium">
-          {(["entrepreneur", "trader"] as Role[]).map((r) => (
+          {ROLES.map((r, i) => (
             <button
               key={r}
               onClick={() => r !== role && setPending(r)}
@@ -62,7 +63,7 @@ export default function PersonaToggle() {
                 r === role
                   ? "bg-teal-600 text-white cursor-default"
                   : "bg-white text-slate-500 hover:bg-slate-50"
-              } ${r === "trader" ? "border-l border-slate-200" : ""}`}
+              } ${i > 0 ? "border-l border-slate-200" : ""}`}
             >
               {LABEL[r]}
             </button>

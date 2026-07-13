@@ -18,7 +18,7 @@ from regstack.auth.jwt import TokenError, is_payload_bulk_revoked
 from regstack.models.user import BaseUser
 
 from db import get_db, get_or_create_profile, init_db
-from prompts import BIASES, BIAS_NAMES, TRADER_QUESTIONS, build_single_bias_analysis_prompt, build_single_bias_prompt, build_summary_analysis_prompt
+from prompts import BIASES, BIAS_NAMES, TRADER_QUESTIONS, ENTREPRENEUR_QUESTIONS, EXECUTIVE_QUESTIONS, build_single_bias_analysis_prompt, build_single_bias_prompt, build_summary_analysis_prompt
 
 # Load .env.local when running locally — resolve relative to this file, not cwd
 _ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env.local")
@@ -72,7 +72,16 @@ def compute_level(score: int) -> str:
     return "High"
 
 
-VALID_ROLES = {"entrepreneur", "trader"}
+VALID_ROLES = {"entrepreneur", "trader", "executive"}
+
+# All current roles are pinned static content (reviewed & committed). Any role
+# NOT listed here is generated on demand via Claude — the path used when adding
+# a brand-new category before it gets pinned.
+STATIC_QUESTION_SETS: dict[str, dict] = {
+    "trader": TRADER_QUESTIONS,
+    "entrepreneur": ENTREPRENEUR_QUESTIONS,
+    "executive": EXECUTIVE_QUESTIONS,
+}
 
 
 # ── Auth: cookie-based session on top of regstack's bearer JWT ───────────────
@@ -185,7 +194,7 @@ class RoleUpdate(BaseModel):
 @app.patch("/api/me/role")
 def update_role(body: RoleUpdate, user_id: str = Depends(current_user_id)):
     if body.role not in VALID_ROLES:
-        raise HTTPException(status_code=400, detail="role must be 'entrepreneur' or 'trader'")
+        raise HTTPException(status_code=400, detail="role must be one of: entrepreneur, trader, executive")
     current_role = get_or_create_profile(user_id)  # ensure row exists
 
     # Same persona — nothing to do, and crucially no destructive wipe.
@@ -617,7 +626,7 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
     role = body.get("role", "entrepreneur")
 
     if role not in VALID_ROLES:
-        raise HTTPException(status_code=400, detail="role must be 'entrepreneur' or 'trader'")
+        raise HTTPException(status_code=400, detail="role must be one of: entrepreneur, trader, executive")
 
     if target_bias:
         biases_to_seed = [b for b in BIASES if b["name"] == target_bias]
@@ -629,14 +638,16 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
     seeded = []
     failed = []
 
-    if role == "trader":
+    # Pinned static sets (trader, entrepreneur) — insert reviewed content directly.
+    if role in STATIC_QUESTION_SETS:
+        question_set = STATIC_QUESTION_SETS[role]
         db = get_db()
         try:
             for bias_obj in biases_to_seed:
                 name = bias_obj["name"]
-                questions = TRADER_QUESTIONS.get(name)
+                questions = question_set.get(name)
                 if not questions:
-                    failed.append({"bias": name, "error": "No trader questions defined"})
+                    failed.append({"bias": name, "error": f"No {role} questions defined"})
                     continue
                 try:
                     for i, q in enumerate(questions):
@@ -661,13 +672,17 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
 
     client = get_anthropic()
 
+    # Accumulate the scenario setups used so far so each bias avoids repeating
+    # situations already covered elsewhere in the set (keeps a 40-question run diverse).
+    used_scenarios: list[str] = []
+
     for bias_obj in biases_to_seed:
         name = bias_obj["name"]
         try:
             message = client.messages.create(
                 model="claude-sonnet-4-6",
-                max_tokens=2000,
-                messages=[{"role": "user", "content": build_single_bias_prompt(name, role=role)}],
+                max_tokens=2400,
+                messages=[{"role": "user", "content": build_single_bias_prompt(name, role=role, avoid_scenarios=used_scenarios)}],
             )
             raw = message.content[0].text if message.content else ""
             match = re.search(r"\[[\s\S]*\]", raw)
@@ -677,6 +692,11 @@ def seed_questions(request: Request, body: dict[str, Any] = {}):
             questions = json.loads(match.group())
             if not isinstance(questions, list) or len(questions) != 4:
                 raise ValueError(f"Expected 4 questions, got {len(questions)}")
+
+            for q in questions:
+                tag = q.get("scenario")
+                if tag:
+                    used_scenarios.append(tag)
 
             db = get_db()
             try:
