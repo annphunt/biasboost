@@ -125,6 +125,7 @@ export default function AnalysisPage() {
   const [summaryDone, setSummaryDone] = useState(false);
   const [detail, setDetail] = useState<string | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [detailDone, setDetailDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showReview, setShowReview] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState<ReviewQuestion[]>([]);
@@ -154,6 +155,12 @@ export default function AnalysisPage() {
   const step2: StepState = summaryDone ? "done" : "loading";
   const step3: StepState = !summaryDone ? "pending" : detail ? "done" : "loading";
 
+  // Overall processing state + a single phase message that advances as work completes
+  const processing = !error && !detailDone;
+  const phase = !summaryDone
+    ? (!meta ? "Scoring your answers…" : "Interpreting your result…")
+    : "Adding detail on your responses…";
+
   // Auto-load detail once summary is done
   useEffect(() => {
     if (!summaryDone) return;
@@ -177,7 +184,7 @@ export default function AnalysisPage() {
           break;
         }
       }
-      if (!cancelled) setLoadingDetail(false);
+      if (!cancelled) { setLoadingDetail(false); setDetailDone(true); }
     }
 
     pollDetail();
@@ -272,7 +279,13 @@ export default function AnalysisPage() {
   return (
     <main className="min-h-screen flex flex-col bg-white">
       {/* Top bar */}
-      <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
+      <div className="border-b border-slate-200 bg-white sticky top-0 z-10 relative">
+        {/* Indeterminate progress bar — edge-of-screen motion signalling active work */}
+        {processing && (
+          <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-teal-100 overflow-hidden">
+            <div className="progress-indeterminate bg-teal-500 rounded-full" />
+          </div>
+        )}
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
@@ -314,13 +327,15 @@ export default function AnalysisPage() {
                 {displayLevel}
               </span>
             ) : (
-              <span className="flex-shrink-0 w-20 h-7 bg-slate-100 rounded-full animate-pulse" />
+              <span className="flex-shrink-0 w-20 h-7 rounded-full skeleton-shimmer" />
             )}
           </div>
 
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs text-slate-400">
-              <span>Score: {meta ? `${displayScore} / 12` : "— / 12"}</span>
+              <span className={meta ? "" : "text-teal-600 font-medium"}>
+                {meta ? `Score: ${displayScore} / 12` : "Calculating your score…"}
+              </span>
               <span className="flex gap-3">
                 <span className="text-green-600">Low 0–4</span>
                 <span className="text-amber-600">Medium 5–8</span>
@@ -328,13 +343,31 @@ export default function AnalysisPage() {
               </span>
             </div>
             <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-200 ${meta ? LEVEL_STYLES[displayLevel].bar : "bg-slate-200"}`}
-                style={{ width: meta ? `${(displayScore / 12) * 100}%` : "0%" }}
-              />
+              {meta ? (
+                <div
+                  className={`h-full rounded-full transition-all duration-200 ${LEVEL_STYLES[displayLevel].bar}`}
+                  style={{ width: `${(displayScore / 12) * 100}%` }}
+                />
+              ) : (
+                <div className="h-full w-full skeleton-shimmer" />
+              )}
             </div>
           </div>
         </div>
+
+        {/* Primary status banner — the one loud, changing signal that we're working */}
+        {processing && (
+          <div className="flex items-center gap-3 rounded-2xl border border-teal-200 bg-teal-50 px-5 py-4">
+            <svg className="animate-spin w-5 h-5 flex-shrink-0 text-teal-600" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-teal-800">{phase}</p>
+              <p className="text-xs text-teal-700/70">This usually takes a few seconds.</p>
+            </div>
+          </div>
+        )}
 
         {/* Status bar */}
         <div className="flex justify-center py-1">
@@ -355,17 +388,6 @@ export default function AnalysisPage() {
           </div>
         )}
 
-        {/* Inline status 1 — shown immediately, removed when summary arrives */}
-        {!summaryDone && (
-          <div className="flex items-center gap-3 text-slate-400 text-sm px-1">
-            <svg className="animate-spin w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-            </svg>
-            Now analysing what this score means…
-          </div>
-        )}
-
         {/* Score summary — header always shown, skeleton until text arrives */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
           <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
@@ -380,23 +402,12 @@ export default function AnalysisPage() {
             </>
           ) : (
             <div className="space-y-2">
-              <div className="h-3 bg-slate-100 rounded animate-pulse w-full" />
-              <div className="h-3 bg-slate-100 rounded animate-pulse w-4/5" />
-              <div className="h-3 bg-slate-100 rounded animate-pulse w-3/5" />
+              <div className="h-3 rounded skeleton-shimmer w-full" />
+              <div className="h-3 rounded skeleton-shimmer w-4/5" />
+              <div className="h-3 rounded skeleton-shimmer w-3/5" />
             </div>
           )}
         </div>
-
-        {/* Inline status 2 — shown when summary done but detail not yet ready */}
-        {summaryDone && loadingDetail && !detail && (
-          <div className="flex items-center gap-3 text-slate-400 text-sm px-1">
-            <svg className="animate-spin w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-            </svg>
-            Now generating more detail on your specific responses…
-          </div>
-        )}
 
         {/* Detail — auto-loads after summary done */}
         {detail && (

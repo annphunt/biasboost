@@ -5,3 +5,35 @@
   --color-amber-400: #fbbf24;
   --color-amber-500: #f59e0b;
 }
+
+/* Loading affordances for the analysis screen */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes indeterminate {
+  0%   { left: -45%; width: 45%; }
+  50%  { left: 30%;  width: 50%; }
+  100% { left: 100%; width: 45%; }
+}
+
+/* Moving gradient sweep — reads as "loading" far better than an opacity pulse */
+@utility skeleton-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    #f1f5f9 25%,
+    #e2e8f0 37%,
+    #f1f5f9 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Indeterminate progress segment — pair with a relative, overflow-hidden track */
+@utility progress-indeterminate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  animation: indeterminate 1.3s ease-in-out infinite;
+}
