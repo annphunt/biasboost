@@ -125,6 +125,20 @@ export default function BiasMenuPage() {
           )}
         </div>
 
+        {/* Calibration Score — placeholder concept; real calculation comes later */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/60 px-5 py-4 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
+              Calibration Score
+            </p>
+            <p className="text-sm text-slate-400 mt-1 max-w-xs leading-snug">
+              How well-calibrated your judgement is over time. We&apos;ll start building
+              this as you practise.
+            </p>
+          </div>
+          <span className="text-4xl font-bold text-slate-300 leading-none">—</span>
+        </div>
+
         {/* Error banner */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg px-4 py-3 text-sm">

@@ -3,28 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import IntroCarousel from "./IntroCarousel";
-import { markIntroSeen } from "../actions";
-
-interface Props {
-  showCarousel: boolean;
-}
 
 type Tab = "register" | "login";
 
-export default function LandingPage({ showCarousel: initialShow }: Props) {
-  const [showCarousel, setShowCarousel] = useState(initialShow);
+export default function LandingPage() {
   const [tab, setTab] = useState<Tab>("register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  async function dismissCarousel() {
-    await markIntroSeen();
-    setShowCarousel(false);
-  }
 
   async function handleSubmit() {
     setError(null);
@@ -52,7 +40,8 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
         const data = await login.json().catch(() => ({}));
         throw new Error(data.detail ?? "Login failed");
       }
-      router.push("/biases");
+      // New accounts get the welcome intro; returning users go straight in.
+      router.push(tab === "register" ? "/welcome" : "/biases");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
       setLoading(false);
@@ -60,45 +49,34 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
   }
 
   return (
-    <>
-      {showCarousel && (
-        <IntroCarousel
-          onDone={dismissCarousel}
-          onSkip={dismissCarousel}
-          hasSeenBefore={!initialShow}
-        />
-      )}
-
-      <main className="min-h-screen flex flex-col bg-white">
-        {/* Top bar */}
-        <div className="border-b border-slate-200 bg-white">
-          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center">
-              <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
-            </div>
-            {!initialShow && !showCarousel && (
-              <button
-                onClick={() => setShowCarousel(true)}
-                className="text-xs text-slate-400 hover:text-slate-600 border border-slate-200 hover:border-slate-300 rounded-lg px-3 py-1.5 transition-colors"
-              >
-                Tour
-              </button>
-            )}
-          </div>
+    <main className="min-h-screen flex flex-col bg-white">
+      {/* Top bar */}
+      <div className="border-b border-slate-200 bg-white">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
+          <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
         </div>
+      </div>
 
-        {/* Hero */}
-        <div className="max-w-5xl mx-auto w-full px-4 py-16 space-y-10">
-          <div className="space-y-6">
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 leading-tight">
-              Welcome to BiasBoost.
+      {/* Two-column hero */}
+      <div className="max-w-6xl mx-auto w-full px-4 py-16 sm:py-24 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+        {/* Left — messaging + form */}
+        <div className="space-y-10">
+          <div className="space-y-5">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 leading-[1.1]">
+              Think more clearly.<br />Make better decisions.
             </h1>
             <p className="text-slate-500 text-lg leading-relaxed max-w-md">
-              Create an account to save your progress across sessions.
+              Every day, hidden thinking patterns influence how we interpret information,
+              make decisions and judge other people.
+            </p>
+            <p className="text-slate-500 text-lg leading-relaxed max-w-md">
+              BiasBoost helps you recognise those patterns through short interactive
+              exercises, so you can develop better judgement at work and in life.
             </p>
           </div>
 
-          <div className="max-w-sm space-y-6">
+          <div className="max-w-sm space-y-4">
             {/* Tabs */}
             <div className="flex rounded-xl border border-slate-200 overflow-hidden">
               <button
@@ -168,11 +146,47 @@ export default function LandingPage({ showCarousel: initialShow }: Props) {
               disabled={loading || !email || !password}
               className="w-full py-3 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm tracking-wide transition-colors"
             >
-              {loading ? (tab === "register" ? "Creating account…" : "Signing in…") : (tab === "register" ? "Create account →" : "Sign in →")}
+              {loading
+                ? (tab === "register" ? "Creating account…" : "Signing in…")
+                : (tab === "register" ? "Start Learning →" : "Sign in →")}
             </button>
+
+            {tab === "register" && (
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Create a free account to save your progress, track your improvement and
+                personalise your learning.
+              </p>
+            )}
           </div>
         </div>
-      </main>
-    </>
+
+        {/* Right — product preview placeholder */}
+        <div className="hidden lg:block">
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 p-8 h-full min-h-[420px] flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 bg-white border border-slate-200 rounded-full px-2.5 py-1">
+                Product Preview
+              </span>
+            </div>
+            <p className="mt-4 text-sm text-slate-400 max-w-xs leading-relaxed">
+              Interactive scenarios and examples will live here — a look at how
+              BiasBoost works before you dive in.
+            </p>
+
+            {/* Subtle placeholder blocks */}
+            <div className="mt-8 space-y-4 flex-1">
+              <div className="h-24 rounded-xl bg-white border border-slate-200/80" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="h-16 rounded-xl bg-white border border-slate-200/80" />
+                <div className="h-16 rounded-xl bg-white border border-slate-200/80" />
+              </div>
+              <div className="h-4 w-2/3 rounded-full bg-slate-200/70" />
+              <div className="h-4 w-1/2 rounded-full bg-slate-200/70" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   );
 }
