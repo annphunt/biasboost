@@ -2,14 +2,13 @@
 import json
 from unittest.mock import MagicMock, patch, call
 import pytest
-from .conftest import make_user, seed_defaults
+from .conftest import seed_defaults
 
 
-def _completed_attempt(client, db, user_id: int, bias: str = "Confirmation Bias") -> int:
+def _completed_attempt(client, db, bias: str = "Confirmation Bias") -> int:
     """Create an attempt, answer all questions, return attempt_id."""
-    make_user(client, user_id)
     seed_defaults(db, bias)
-    r = client.post("/api/attempts", json={"userId": user_id, "bias": bias})
+    r = client.post("/api/attempts", json={"bias": bias})
     attempt_id = r.json()["attemptId"]
     for i in range(1, 5):
         client.post(f"/api/attempts/{attempt_id}/answer", json={"questionNumber": i, "answer": "A"})
@@ -19,9 +18,8 @@ def _completed_attempt(client, db, user_id: int, bias: str = "Confirmation Bias"
 # ── /analysis ────────────────────────────────────────────────────────────────
 
 def test_analysis_requires_completed_attempt(client, db):
-    make_user(client, 500)
     seed_defaults(db, "Sunk Cost Fallacy")
-    r = client.post("/api/attempts", json={"userId": 500, "bias": "Sunk Cost Fallacy"})
+    r = client.post("/api/attempts", json={"bias": "Sunk Cost Fallacy"})
     attempt_id = r.json()["attemptId"]
 
     r2 = client.get(f"/api/attempts/{attempt_id}/analysis")
@@ -34,7 +32,7 @@ def test_analysis_not_found(client):
 
 
 def test_analysis_streams_text(client, db):
-    attempt_id = _completed_attempt(client, db, 501)
+    attempt_id = _completed_attempt(client, db)
 
     mock_stream = MagicMock()
     mock_stream.__enter__ = MagicMock(return_value=mock_stream)
@@ -56,7 +54,7 @@ def test_analysis_streams_text(client, db):
 
 
 def test_analysis_returns_cached_on_second_call(client, db):
-    attempt_id = _completed_attempt(client, db, 502)
+    attempt_id = _completed_attempt(client, db)
 
     mock_stream = MagicMock()
     mock_stream.__enter__ = MagicMock(return_value=mock_stream)
@@ -82,7 +80,7 @@ def test_analysis_returns_cached_on_second_call(client, db):
 
 
 def test_analysis_meta_contains_score_and_level(client, db):
-    attempt_id = _completed_attempt(client, db, 503)
+    attempt_id = _completed_attempt(client, db)
 
     mock_stream = MagicMock()
     mock_stream.__enter__ = MagicMock(return_value=mock_stream)
@@ -108,7 +106,7 @@ def test_analysis_meta_contains_score_and_level(client, db):
 # ── /analysis/detail ─────────────────────────────────────────────────────────
 
 def test_detail_not_ready_returns_202(client, db):
-    attempt_id = _completed_attempt(client, db, 504)
+    attempt_id = _completed_attempt(client, db)
     r = client.get(f"/api/attempts/{attempt_id}/analysis/detail")
     assert r.status_code == 202
     assert r.json()["ready"] is False
@@ -120,7 +118,7 @@ def test_detail_not_found(client):
 
 
 def test_detail_returns_when_ready(client, db):
-    attempt_id = _completed_attempt(client, db, 505)
+    attempt_id = _completed_attempt(client, db)
     db.execute(
         "UPDATE bias_attempts SET analysis = ? WHERE id = ?",
         ("Detailed analysis text.", attempt_id),

@@ -24,10 +24,27 @@ def tmp_db_path(tmp_path):
         yield db_file
 
 
+# Fixed identity for the authenticated test client. The app derives the caller
+# from a session cookie via the `current_user_id` dependency; in tests we
+# override that dependency instead of standing up the full regstack auth stack.
+TEST_UID = "test-user-1"
+
+
 @pytest.fixture()
 def client(tmp_db_path):
-    """TestClient wired to the per-test DB (via env var)."""
-    from backend.main import app
+    """TestClient authenticated as TEST_UID (auth dependency overridden)."""
+    from backend.main import app, current_user_id
+    app.dependency_overrides[current_user_id] = lambda: TEST_UID
+    with TestClient(app, raise_server_exceptions=False) as c:
+        yield c
+    app.dependency_overrides.pop(current_user_id, None)
+
+
+@pytest.fixture()
+def anon_client(tmp_db_path):
+    """Unauthenticated TestClient — no session, for asserting 401 responses."""
+    from backend.main import app, current_user_id
+    app.dependency_overrides.pop(current_user_id, None)  # ensure no override leaks in
     with TestClient(app, raise_server_exceptions=False) as c:
         yield c
 
@@ -42,12 +59,6 @@ def db(tmp_db_path):
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-
-def make_user(client, user_id: int = 1):
-    r = client.post("/api/users", json={"userId": user_id})
-    assert r.status_code == 201
-    return r.json()
-
 
 def seed_defaults(db, bias: str = "Confirmation Bias"):
     """Insert 4 default questions for a bias into default_questions."""
