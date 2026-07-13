@@ -220,25 +220,45 @@ def get_my_biases(user_id: str = Depends(current_user_id)):
         rows = db.execute(
             "SELECT * FROM bias_attempts WHERE user_id = ?", (user_id,)
         ).fetchall()
+        answered_rows = db.execute(
+            """SELECT attempt_id, COUNT(*) AS answered
+               FROM questions
+               WHERE attempt_id IN (SELECT id FROM bias_attempts WHERE user_id = ?)
+                 AND answer_given IS NOT NULL
+               GROUP BY attempt_id""",
+            (user_id,),
+        ).fetchall()
     finally:
         db.close()
 
-    completed = {
-        row["bias"]: {"id": row["id"], "level": row["level"]}
-        for row in rows
-        if row["completed_at"] is not None
-    }
+    answered_by_attempt = {r["attempt_id"]: r["answered"] for r in answered_rows}
 
-    biases = [
-        {
+    # At most one attempt per bias (UNIQUE(user_id, bias)), so index by bias name.
+    by_bias = {}
+    for row in rows:
+        is_completed = row["completed_at"] is not None
+        answered = answered_by_attempt.get(row["id"], 0)
+        by_bias[row["bias"]] = {
+            "attemptId": row["id"],
+            "completed": is_completed,
+            "level": row["level"],
+            "answered": answered,
+            # started but not finished (at least one answer, not all done)
+            "inProgress": (not is_completed) and answered > 0,
+        }
+
+    biases = []
+    for b in BIASES:
+        info = by_bias.get(b["name"])
+        biases.append({
             "name": b["name"],
             "description": b["description"],
-            "completed": b["name"] in completed,
-            "attemptId": completed[b["name"]]["id"] if b["name"] in completed else None,
-            "level": completed[b["name"]]["level"] if b["name"] in completed else None,
-        }
-        for b in BIASES
-    ]
+            "completed": bool(info and info["completed"]),
+            "inProgress": bool(info and info["inProgress"]),
+            "answered": info["answered"] if info else 0,
+            "attemptId": info["attemptId"] if info else None,
+            "level": info["level"] if (info and info["completed"]) else None,
+        })
 
     return {"biases": biases}
 

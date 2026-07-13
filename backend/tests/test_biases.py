@@ -37,5 +37,38 @@ def test_get_biases_completed_shows_up(client, db):
     biases = r.json()["biases"]
     cb = next(b for b in biases if b["name"] == "Confirmation Bias")
     assert cb["completed"] is True
+    assert cb["inProgress"] is False
     assert cb["level"] == "Low"
     assert cb["attemptId"] is not None
+
+
+def test_get_biases_in_progress_shows_partial(client, db):
+    # A started-but-unfinished attempt: 1 of 2 questions answered, not completed.
+    db.execute("INSERT INTO users (auth_user_id, role) VALUES (?, 'entrepreneur')", (TEST_UID,))
+    cur = db.execute(
+        "INSERT INTO bias_attempts (user_id, bias) VALUES (?, 'Anchoring Bias')",
+        (TEST_UID,),
+    )
+    attempt_id = cur.lastrowid
+    db.execute(
+        """INSERT INTO questions
+           (attempt_id, question_number, question_text, options, bias, scoring, answer_given)
+           VALUES (?, 1, 'Q1', '{}', 'Anchoring Bias', '{}', 'A')""",
+        (attempt_id,),
+    )
+    db.execute(
+        """INSERT INTO questions
+           (attempt_id, question_number, question_text, options, bias, scoring)
+           VALUES (?, 2, 'Q2', '{}', 'Anchoring Bias', '{}')""",
+        (attempt_id,),
+    )
+    db.commit()
+
+    r = client.get("/api/me/biases")
+    assert r.status_code == 200
+    ab = next(b for b in r.json()["biases"] if b["name"] == "Anchoring Bias")
+    assert ab["completed"] is False
+    assert ab["inProgress"] is True
+    assert ab["answered"] == 1
+    assert ab["attemptId"] == attempt_id
+    assert ab["level"] is None

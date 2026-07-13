@@ -92,7 +92,9 @@ export default function QuizPage() {
     setError(null);
     try {
       const biasName = encodeURIComponent(data.attempt.bias);
-      router.push(`/analysis/${attemptId}?bias=${biasName}`);
+      // replace (not push) so browser Back from the results screen returns to the
+      // dashboard/status screen rather than re-opening the completed quiz.
+      router.replace(`/analysis/${attemptId}?bias=${biasName}`);
     } catch (err) {
       setError(String(err));
       setSubmitting(false);
@@ -133,7 +135,7 @@ export default function QuizPage() {
       <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <a href="/" className="flex items-center hover:opacity-70 transition-opacity">
+            <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
               <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
             </a>
             <span className="ml-2 text-xs text-slate-400">Module</span>

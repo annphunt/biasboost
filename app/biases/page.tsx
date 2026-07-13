@@ -32,9 +32,13 @@ interface BiasCard {
   name: string;
   description: string;
   completed: boolean;
+  inProgress: boolean;
+  answered: number;
   attemptId: number | null;
   level: Level | null;
 }
+
+const TOTAL_QUESTIONS = 4;
 
 function PlaceholderIcon() {
   return (
@@ -97,7 +101,7 @@ export default function BiasMenuPage() {
       {/* Top bar */}
       <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <a href="/" className="flex items-center hover:opacity-70 transition-opacity">
+          <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
             <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
           </a>
           <div className="flex items-center gap-3">
@@ -133,7 +137,7 @@ export default function BiasMenuPage() {
             </p>
             <p className="text-sm text-slate-400 mt-1 max-w-xs leading-snug">
               How well-calibrated your judgement is over time. We&apos;ll start building
-              this as you practise.
+              this in a future version — coming soon.
             </p>
           </div>
           <span className="text-4xl font-bold text-slate-300 leading-none">—</span>
@@ -163,8 +167,15 @@ export default function BiasMenuPage() {
             {biases.map((bias) => {
               const isLoading = loadingBias === bias.name;
               const isDisabled = !!loadingBias && !bias.completed;
+              // Tile states:
+              //  - not started        → white placeholder
+              //  - in progress        → light teal (some answers saved, not finished)
+              //  - completed, unscored → neutral grey (score/analysis still pending)
+              //  - scored             → Low/Med/High colour
               const bgClass = bias.completed
-                ? (bias.level ? LEVEL_BG[bias.level] : "bg-teal-500")
+                ? (bias.level ? LEVEL_BG[bias.level] : "bg-slate-300")
+                : bias.inProgress
+                ? "bg-teal-50 border border-teal-200"
                 : "bg-white border border-slate-200";
               const iconSrc = BIAS_ICON[bias.name];
 
@@ -203,16 +214,24 @@ export default function BiasMenuPage() {
                         height={80}
                         className="w-full h-full object-contain p-1.5"
                       />
+                    ) : bias.inProgress ? (
+                      <span className="text-sm sm:text-base font-bold text-teal-600">
+                        {bias.answered}/{TOTAL_QUESTIONS}
+                      </span>
                     ) : (
                       <PlaceholderIcon />
                     )}
                   </button>
 
-                  {bias.completed && (
+                  {bias.completed ? (
                     <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium text-center leading-tight max-w-[56px] sm:max-w-[80px]">
                       {bias.name}
                     </span>
-                  )}
+                  ) : bias.inProgress ? (
+                    <span className="text-[9px] sm:text-[10px] text-teal-600 font-medium text-center leading-tight">
+                      In progress
+                    </span>
+                  ) : null}
                 </div>
               );
             })}

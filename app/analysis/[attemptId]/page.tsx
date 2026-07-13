@@ -294,7 +294,7 @@ export default function AnalysisPage() {
             >
               ← Back
             </button>
-            <a href="/" className="flex items-center hover:opacity-70 transition-opacity">
+            <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
               <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
             </a>
             <span className="ml-2 text-xs text-slate-400">Analysis</span>
@@ -343,13 +343,11 @@ export default function AnalysisPage() {
               </span>
             </div>
             <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              {meta ? (
+              {meta && (
                 <div
                   className={`h-full rounded-full transition-all duration-200 ${LEVEL_STYLES[displayLevel].bar}`}
                   style={{ width: `${(displayScore / 12) * 100}%` }}
                 />
-              ) : (
-                <div className="h-full w-full skeleton-shimmer" />
               )}
             </div>
           </div>
