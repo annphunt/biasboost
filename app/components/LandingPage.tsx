@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import LandingCarousel from "./LandingCarousel";
 
 type Tab = "register" | "login";
 
@@ -62,18 +63,11 @@ export default function LandingPage() {
 
         {/* Left — messaging + form */}
         <div className="space-y-10">
-          <div className="space-y-5">
+          <div className="space-y-6">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-800 leading-[1.1]">
               Think more clearly.<br />Make better decisions.
             </h1>
-            <p className="text-slate-500 text-lg leading-relaxed max-w-md">
-              Every day, hidden thinking patterns influence how we interpret information,
-              make decisions and judge other people.
-            </p>
-            <p className="text-slate-500 text-lg leading-relaxed max-w-md">
-              BiasBoost helps you recognise those patterns through short interactive
-              exercises, so you can develop better judgement at work and in life.
-            </p>
+            <LandingCarousel />
           </div>
 
           <div className="max-w-sm space-y-4">

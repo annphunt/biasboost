@@ -48,7 +48,7 @@ export default function OnboardingPage() {
               Where will you use BiasBoost most?
             </h1>
             <p className="text-slate-500 text-lg leading-relaxed max-w-xl">
-              Choose the context you would like your assessments to focus on. You can
+              Choose the context you would like your Boosts to focus on. You can
               change this later in Settings.
             </p>
           </div>

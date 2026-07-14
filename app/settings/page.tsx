@@ -78,7 +78,7 @@ export default function SettingsPage() {
           <div className="space-y-1">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-teal-600">Focus</h2>
             <p className="text-sm text-slate-500 max-w-xl leading-relaxed">
-              The context your assessments are set in. Currently{" "}
+              The context your Boosts are set in. Currently{" "}
               <span className="font-medium text-slate-700">{focusLabel(current)}</span>.
             </p>
           </div>
@@ -126,7 +126,7 @@ export default function SettingsPage() {
                 </h3>
                 <p className="text-sm text-slate-500 leading-relaxed">
                   This will <span className="font-semibold text-slate-700">permanently delete
-                  all your current results</span> — every assessment you&apos;ve completed and
+                  all your current results</span> — every Boost you&apos;ve completed and
                   its analysis. This cannot be undone.
                 </p>
               </div>

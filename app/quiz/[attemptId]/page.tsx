@@ -138,7 +138,7 @@ export default function QuizPage() {
             <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
               <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
             </a>
-            <span className="ml-2 text-xs text-slate-400">Module</span>
+            <span className="ml-2 text-xs text-slate-400">Boost</span>
           </div>
           <UserBadge />
         </div>

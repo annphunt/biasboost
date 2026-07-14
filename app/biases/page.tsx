@@ -96,12 +96,12 @@ export default function DashboardPage() {
   const ctaLabel = allComplete
     ? "Review Your Results →"
     : completedCount === 0
-    ? "Start First Assessment →"
-    : "Start Next Assessment →";
+    ? "Start First Boost →"
+    : "Start Next Boost →";
 
   function handlePrimary() {
     if (allComplete) {
-      document.getElementById("assessments")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("boosts")?.scrollIntoView({ behavior: "smooth" });
     } else if (nextBias) {
       startBias(nextBias.name);
     }
@@ -137,7 +137,7 @@ export default function DashboardPage() {
             Start building better judgement.
           </h1>
           <p className="text-slate-500 text-lg leading-relaxed max-w-xl">
-            Each assessment explores a different hidden thinking pattern. Complete them in
+            Each Boost explores a different hidden thinking pattern. Complete them in
             any order and discover the bias only after you&apos;ve made your judgement.
           </p>
         </header>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
           )}
           {allComplete && (
             <p className="text-sm text-emerald-700 mt-3">
-              All {total} assessments complete — revisit any below.
+              All {total} Boosts complete — revisit any below.
             </p>
           )}
         </section>
@@ -191,20 +191,20 @@ export default function DashboardPage() {
             </p>
             <p className="text-sm font-medium text-slate-700 mt-1.5">Not enough data yet.</p>
             <p className="text-sm text-slate-400 mt-0.5 max-w-sm leading-snug">
-              Complete your first assessment to begin building a picture of how
+              Complete your first Boost to begin building a picture of how
               well-calibrated your judgement is over time.
             </p>
           </div>
           <span className="text-4xl font-bold text-slate-300 leading-none">—</span>
         </section>
 
-        {/* 5. Assessment grid */}
-        <section id="assessments" className="space-y-4 scroll-mt-20">
+        {/* 5. Boost grid */}
+        <section id="boosts" className="space-y-4 scroll-mt-20">
           <div className="space-y-1.5">
-            <h2 className="text-xl font-semibold text-slate-800">Your Assessments</h2>
+            <h2 className="text-xl font-semibold text-slate-800">Your Boosts</h2>
             <p className="text-sm text-slate-500 max-w-xl leading-relaxed">
-              10 assessments, each revealing a different hidden thinking pattern. Choose any
-              unopened assessment, or use “{completedCount === 0 ? "Start First" : "Start Next"} Assessment”
+              10 Boosts, each revealing a different hidden thinking pattern. Choose any
+              unopened Boost, or use “{completedCount === 0 ? "Start First" : "Start Next"} Boost”
               above.
             </p>
           </div>
@@ -218,7 +218,7 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {biases.map((bias, i) => (
-                <AssessmentCard
+                <BoostCard
                   key={bias.name}
                   bias={bias}
                   number={i + 1}
@@ -235,7 +235,7 @@ export default function DashboardPage() {
   );
 }
 
-function AssessmentCard({
+function BoostCard({
   bias, number, busy, disabled, onOpen,
 }: {
   bias: BiasCard;
@@ -246,10 +246,10 @@ function AssessmentCard({
 }) {
   const iconSrc = BIAS_ICON[bias.name];
   const label = bias.completed
-    ? `Review ${bias.name} — assessment ${number}`
+    ? `Review ${bias.name} — Boost ${number}`
     : bias.inProgress
-    ? `Resume assessment ${number}`
-    : `Start assessment ${number}`;
+    ? `Resume Boost ${number}`
+    : `Start Boost ${number}`;
 
   return (
     <button
@@ -268,7 +268,7 @@ function AssessmentCard({
       ].join(" ")}
     >
       <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-        Assessment {number}
+        Boost {number}
       </span>
 
       {busy ? (

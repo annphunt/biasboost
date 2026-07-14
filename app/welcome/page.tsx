@@ -27,7 +27,7 @@ export default function WelcomePage() {
               Can I trust my own judgement?
             </p>
             <p>
-              This assessment explores how you naturally evaluate evidence, handle
+              BiasBoost explores how you naturally evaluate evidence, handle
               uncertainty and make decisions.
             </p>
             <p>
