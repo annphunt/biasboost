@@ -8,6 +8,7 @@ export interface Focus {
   slug: FocusSlug;
   label: string;
   description: string;
+  comingSoon?: boolean; // shown but not selectable yet
 }
 
 export const FOCUSES: Focus[] = [
@@ -25,6 +26,7 @@ export const FOCUSES: Focus[] = [
     slug: "trader",
     label: "Financial Trader",
     description: "Market decisions — positions, risk and reacting to P&L.",
+    comingSoon: true,
   },
 ];
 
