@@ -43,10 +43,10 @@ export default function WelcomePage() {
 
           <div className="space-y-3 pt-2">
             <button
-              onClick={() => router.push("/biases")}
+              onClick={() => router.push("/onboarding")}
               className="w-full sm:w-auto px-8 py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-sm tracking-wide transition-colors"
             >
-              Start First Exercise →
+              Get started →
             </button>
             <p className="text-xs text-slate-400">
               Takes about 30 minutes. Better on a laptop. Pause and return whenever you like.

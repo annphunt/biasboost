@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import UserBadge from "../components/UserBadge";
-import PersonaToggle from "../components/PersonaToggle";
-
 
 type Level = "Low" | "Medium" | "High";
 
 const LEVEL_BG: Record<Level, string> = {
+  Low:    "bg-green-500",
+  Medium: "bg-amber-500",
+  High:   "bg-red-500",
+};
+const LEVEL_DOT: Record<Level, string> = {
   Low:    "bg-green-500",
   Medium: "bg-amber-500",
   High:   "bg-red-500",
@@ -28,6 +31,9 @@ const BIAS_ICON: Record<string, string> = {
   "Dunning-Kruger Effect":  "/icons/dunning-kruger-effect.png",
 };
 
+const TOTAL_QUESTIONS = 4;
+const DURATION_LABEL = "4–6 min";
+
 interface BiasCard {
   name: string;
   description: string;
@@ -38,30 +44,11 @@ interface BiasCard {
   level: Level | null;
 }
 
-const TOTAL_QUESTIONS = 4;
-
-function PlaceholderIcon() {
-  return (
-    <svg viewBox="0 0 96 96" fill="none" className="w-full h-full" aria-hidden="true">
-      <circle cx="48" cy="48" r="44" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="4 3" />
-      <circle cx="48" cy="48" r="32" fill="#f1f5f9" />
-      <path
-        d="M48 56v-2c0-3 1.5-5 4.5-7.5C55 44 56 42 56 39.5 56 35.4 52.4 32 48 32s-8 3.4-8 7.5"
-        stroke="#94a3b8"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <circle cx="48" cy="62" r="2.5" fill="#94a3b8" />
-    </svg>
-  );
-}
-
-export default function BiasMenuPage() {
+export default function DashboardPage() {
   const router = useRouter();
 
   const [biases, setBiases] = useState<BiasCard[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [loadingBias, setLoadingBias] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +58,10 @@ export default function BiasMenuPage() {
         if (r.status === 401) { router.push("/"); return null; }
         return r.json();
       })
-      .then((data) => data && setBiases(data.biases ?? []));
+      .then((data) => {
+        if (data) setBiases(data.biases ?? []);
+        setLoaded(true);
+      });
   }, [router]);
 
   async function startBias(biasName: string) {
@@ -92,167 +82,230 @@ export default function BiasMenuPage() {
     }
   }
 
+  function openAnalysis(bias: BiasCard) {
+    router.push(`/analysis/${bias.attemptId}?bias=${encodeURIComponent(bias.name)}`);
+  }
+
   const completedCount = biases.filter((b) => b.completed).length;
-  const pct = biases.length === 0 ? 0 : Math.round((completedCount / 10) * 100);
-  const allComplete = biases.length === 10 && biases.every((b) => b.completed);
+  const total = biases.length || 10;
+  const pct = Math.round((completedCount / total) * 100);
+  const nextIndex = biases.findIndex((b) => !b.completed);
+  const nextBias = nextIndex >= 0 ? biases[nextIndex] : null;
+  const allComplete = loaded && biases.length > 0 && !nextBias;
+
+  const ctaLabel = allComplete
+    ? "Review Your Results →"
+    : completedCount === 0
+    ? "Start First Assessment →"
+    : "Start Next Assessment →";
+
+  function handlePrimary() {
+    if (allComplete) {
+      document.getElementById("assessments")?.scrollIntoView({ behavior: "smooth" });
+    } else if (nextBias) {
+      startBias(nextBias.name);
+    }
+  }
+
+  const ctaBusy = !!nextBias && loadingBias === nextBias.name;
 
   return (
     <main className="min-h-screen flex flex-col bg-white">
-      {/* Top bar */}
+      {/* Header */}
       <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
             <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
           </a>
-          <div className="flex items-center gap-3">
-            <PersonaToggle />
+          <div className="flex items-center gap-4">
+            <a
+              href="/settings"
+              className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
+            >
+              Settings
+            </a>
             <UserBadge />
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto w-full px-4 py-12 space-y-8">
+      <div className="max-w-3xl mx-auto w-full px-4 py-12 space-y-10">
 
-        {/* Progress header */}
-        <div className="space-y-2">
-          <div className="flex items-end gap-3">
-            <span className="text-6xl font-bold text-slate-800 leading-none">{pct}%</span>
-            <span className="text-slate-400 text-sm mb-1 leading-snug">
-              {completedCount} of 10<br />complete
-            </span>
-          </div>
+        {/* 1. Welcome area */}
+        <header className="space-y-3">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-800 leading-tight text-balance">
+            Start building better judgement.
+          </h1>
+          <p className="text-slate-500 text-lg leading-relaxed max-w-xl">
+            Each assessment explores a different hidden thinking pattern. Complete them in
+            any order and discover the bias only after you&apos;ve made your judgement.
+          </p>
+        </header>
 
-          {biases.length > 0 && completedCount === 0 && (
-            <p className="text-slate-400 text-sm">
-              Select any icon below to start your first assessment.
-            </p>
-          )}
-        </div>
-
-        {/* Calibration Score — placeholder concept; real calculation comes later */}
-        <div className="rounded-xl border border-slate-200 bg-slate-50/60 px-5 py-4 flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
-              Calibration Score
-            </p>
-            <p className="text-sm text-slate-400 mt-1 max-w-xs leading-snug">
-              How well-calibrated your judgement is over time. We&apos;ll start building
-              this in a future version — coming soon.
-            </p>
-          </div>
-          <span className="text-4xl font-bold text-slate-300 leading-none">—</span>
-        </div>
-
-        {/* Error banner */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg px-4 py-3 text-sm">
             {error}
           </div>
         )}
 
-        {/* Icon grid skeleton */}
-        {biases.length === 0 && (
-          <div className="grid grid-cols-5 gap-3 sm:gap-5">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center gap-1.5">
-                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl bg-slate-100 border border-slate-200 animate-pulse" />
-              </div>
-            ))}
+        {/* 2. Primary action — visually dominant */}
+        <section className="rounded-2xl border border-teal-200 bg-gradient-to-br from-teal-50 to-white p-6 sm:p-7 shadow-sm">
+          <button
+            onClick={handlePrimary}
+            disabled={!loaded || ctaBusy}
+            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-base tracking-wide transition-colors shadow-sm"
+          >
+            {ctaBusy ? "Opening…" : loaded ? ctaLabel : "Loading…"}
+          </button>
+          {!allComplete && (
+            <p className="text-sm text-slate-500 mt-3">About {DURATION_LABEL}</p>
+          )}
+          {allComplete && (
+            <p className="text-sm text-emerald-700 mt-3">
+              All {total} assessments complete — revisit any below.
+            </p>
+          )}
+        </section>
+
+        {/* 3. Progress */}
+        <section className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium text-slate-700">
+              {completedCount} of {total} completed
+            </span>
+            <span className="text-slate-400 tabular-nums">{pct}%</span>
           </div>
-        )}
-
-        {/* Icon grid */}
-        {biases.length > 0 && (
-          <div className="grid grid-cols-5 gap-3 sm:gap-5">
-            {biases.map((bias) => {
-              const isLoading = loadingBias === bias.name;
-              const isDisabled = !!loadingBias && !bias.completed;
-              // Tile states:
-              //  - not started        → white placeholder
-              //  - in progress        → light teal (some answers saved, not finished)
-              //  - completed, unscored → neutral grey (score/analysis still pending)
-              //  - scored             → Low/Med/High colour
-              const bgClass = bias.completed
-                ? (bias.level ? LEVEL_BG[bias.level] : "bg-slate-300")
-                : bias.inProgress
-                ? "bg-teal-50 border border-teal-200"
-                : "bg-white border border-slate-200";
-              const iconSrc = BIAS_ICON[bias.name];
-
-              return (
-                <div key={bias.name} className="flex flex-col items-center gap-1.5">
-                  <button
-                    onClick={() => {
-                      if (bias.completed && bias.attemptId !== null) {
-                        router.push(`/analysis/${bias.attemptId}?bias=${encodeURIComponent(bias.name)}`);
-                      } else {
-                        startBias(bias.name);
-                      }
-                    }}
-                    disabled={isDisabled}
-                    aria-label={bias.completed ? `View ${bias.name} analysis` : `Start module`}
-                    className={[
-                      "w-14 h-14 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 overflow-hidden",
-                      bgClass,
-                      bias.completed
-                        ? "hover:opacity-90 hover:ring-2 hover:ring-offset-2 hover:ring-slate-300 focus:ring-teal-400"
-                        : isDisabled
-                        ? "opacity-40 cursor-not-allowed"
-                        : "hover:border-slate-300 hover:shadow-md cursor-pointer focus:ring-slate-300",
-                    ].join(" ")}
-                  >
-                    {isLoading ? (
-                      <svg className="animate-spin w-4 h-4 sm:w-5 sm:h-5 text-slate-400" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                    ) : bias.completed && iconSrc ? (
-                      <Image
-                        src={iconSrc}
-                        alt={bias.name}
-                        width={80}
-                        height={80}
-                        className="w-full h-full object-contain p-1.5"
-                      />
-                    ) : bias.inProgress ? (
-                      <span className="text-sm sm:text-base font-bold text-teal-600">
-                        {bias.answered}/{TOTAL_QUESTIONS}
-                      </span>
-                    ) : (
-                      <PlaceholderIcon />
-                    )}
-                  </button>
-
-                  {bias.completed ? (
-                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium text-center leading-tight max-w-[56px] sm:max-w-[80px]">
-                      {bias.name}
-                    </span>
-                  ) : bias.inProgress ? (
-                    <span className="text-[9px] sm:text-[10px] text-teal-600 font-medium text-center leading-tight">
-                      In progress
-                    </span>
-                  ) : null}
-                </div>
-              );
-            })}
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-teal-500 rounded-full transition-all duration-500"
+              style={{ width: `${pct}%` }}
+            />
           </div>
-        )}
+        </section>
 
-        {/* Contextual hint */}
-        {completedCount > 0 && !allComplete && (
-          <p className="text-xs text-slate-400 text-center">
-            Select any grey icon to test a new bias.
-          </p>
-        )}
-
-        {/* All-complete banner */}
-        {allComplete && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4 text-emerald-700 text-sm">
-            All 10 biases assessed. Tap any icon above to revisit your analysis.
+        {/* 4. Calibration Score */}
+        <section className="rounded-xl border border-slate-200 bg-slate-50/60 px-5 py-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
+              Calibration Score
+            </p>
+            <p className="text-sm font-medium text-slate-700 mt-1.5">Not enough data yet.</p>
+            <p className="text-sm text-slate-400 mt-0.5 max-w-sm leading-snug">
+              Complete your first assessment to begin building a picture of how
+              well-calibrated your judgement is over time.
+            </p>
           </div>
-        )}
+          <span className="text-4xl font-bold text-slate-300 leading-none">—</span>
+        </section>
 
+        {/* 5. Assessment grid */}
+        <section id="assessments" className="space-y-4 scroll-mt-20">
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-semibold text-slate-800">Your Assessments</h2>
+            <p className="text-sm text-slate-500 max-w-xl leading-relaxed">
+              10 assessments, each revealing a different hidden thinking pattern. Choose any
+              unopened assessment, or use “{completedCount === 0 ? "Start First" : "Start Next"} Assessment”
+              above.
+            </p>
+          </div>
+
+          {!loaded ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="h-28 rounded-xl bg-slate-100 border border-slate-200 animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {biases.map((bias, i) => (
+                <AssessmentCard
+                  key={bias.name}
+                  bias={bias}
+                  number={i + 1}
+                  busy={loadingBias === bias.name}
+                  disabled={!!loadingBias && loadingBias !== bias.name}
+                  onOpen={() => (bias.completed ? openAnalysis(bias) : startBias(bias.name))}
+                />
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </main>
+  );
+}
+
+function AssessmentCard({
+  bias, number, busy, disabled, onOpen,
+}: {
+  bias: BiasCard;
+  number: number;
+  busy: boolean;
+  disabled: boolean;
+  onOpen: () => void;
+}) {
+  const iconSrc = BIAS_ICON[bias.name];
+  const label = bias.completed
+    ? `Review ${bias.name} — assessment ${number}`
+    : bias.inProgress
+    ? `Resume assessment ${number}`
+    : `Start assessment ${number}`;
+
+  return (
+    <button
+      onClick={onOpen}
+      disabled={disabled}
+      aria-label={label}
+      className={[
+        "group relative w-full min-h-[7rem] rounded-xl border p-3.5 flex flex-col text-left transition-all",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2",
+        disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:shadow-md",
+        bias.completed
+          ? "border-slate-200 bg-white hover:border-slate-300"
+          : bias.inProgress
+          ? "border-teal-200 bg-teal-50 hover:border-teal-300"
+          : "border-slate-200 bg-white hover:border-teal-300",
+      ].join(" ")}
+    >
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        Assessment {number}
+      </span>
+
+      {busy ? (
+        <div className="flex-1 flex items-center justify-center">
+          <svg className="animate-spin w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+          </svg>
+        </div>
+      ) : bias.completed ? (
+        <div className="flex-1 flex flex-col justify-between mt-1">
+          <div className="flex items-start gap-2">
+            {iconSrc && (
+              <Image src={iconSrc} alt="" width={32} height={32} className="w-8 h-8 object-contain flex-none" />
+            )}
+            <span className="text-sm font-medium text-slate-800 leading-snug">{bias.name}</span>
+          </div>
+          {bias.level && (
+            <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 mt-2">
+              <span className={`w-2 h-2 rounded-full ${LEVEL_DOT[bias.level]}`} />
+              {bias.level}
+            </span>
+          )}
+        </div>
+      ) : bias.inProgress ? (
+        <div className="flex-1 flex flex-col justify-center">
+          <span className="text-lg font-bold text-teal-700">
+            {bias.answered}/{TOTAL_QUESTIONS}
+          </span>
+          <span className="text-xs font-medium text-teal-600">In progress</span>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col justify-center">
+          <span className="text-base font-semibold text-slate-700">Hidden</span>
+          <span className="text-xs text-slate-400 mt-0.5">{DURATION_LABEL}</span>
+        </div>
+      )}
+    </button>
   );
 }
