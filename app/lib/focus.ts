@@ -13,18 +13,18 @@ export interface Focus {
 export const FOCUSES: Focus[] = [
   {
     slug: "entrepreneur",
-    label: "Building a Business",
+    label: "Startup Founder",
     description: "Founder decisions — product, customers, hiring and runway.",
   },
   {
-    slug: "trader",
-    label: "Investing & Trading",
-    description: "Market decisions — positions, risk and reacting to P&L.",
+    slug: "executive",
+    label: "Company Director",
+    description: "Senior decisions — strategy, people and judgement calls.",
   },
   {
-    slug: "executive",
-    label: "Work & Leadership",
-    description: "Senior decisions — strategy, people and judgement calls.",
+    slug: "trader",
+    label: "Financial Trader",
+    description: "Market decisions — positions, risk and reacting to P&L.",
   },
 ];
 

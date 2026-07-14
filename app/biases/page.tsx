@@ -189,7 +189,7 @@ export default function DashboardPage() {
             <p className="text-xs font-semibold uppercase tracking-widest text-teal-600">
               Calibration Score
             </p>
-            <p className="text-sm font-medium text-slate-700 mt-1.5">Not enough data yet.</p>
+            <p className="text-sm font-medium text-slate-700 mt-1.5">Not implemented yet.</p>
             <p className="text-sm text-slate-400 mt-0.5 max-w-sm leading-snug">
               Complete your first Boost to begin building a picture of how
               well-calibrated your judgement is over time.

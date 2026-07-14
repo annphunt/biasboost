@@ -130,6 +130,7 @@ export default function AnalysisPage() {
   const [showReview, setShowReview] = useState(false);
   const [reviewQuestions, setReviewQuestions] = useState<ReviewQuestion[]>([]);
   const [loadingReview, setLoadingReview] = useState(false);
+  const [step, setStep] = useState(1);
 
   // Animated score counter — counts from 0 to final score over ~1.5s
   useEffect(() => {
@@ -155,11 +156,17 @@ export default function AnalysisPage() {
   const step2: StepState = summaryDone ? "done" : "loading";
   const step3: StepState = !summaryDone ? "pending" : detail ? "done" : "loading";
 
-  // Overall processing state + a single phase message that advances as work completes
   const processing = !error && !detailDone;
-  const phase = !summaryDone
-    ? (!meta ? "Scoring your answers…" : "Interpreting your result…")
-    : "Adding detail on your responses…";
+
+  // Perceived-progress counter for the wait: 1 of 4 → (after 5s) 2 → (after 5s) 3,
+  // then hold on 3 of 4 until the analysis actually finishes. The banner (and so
+  // the counter) is removed when processing ends.
+  useEffect(() => {
+    if (!processing) return;
+    const t2 = setTimeout(() => setStep(2), 5000);
+    const t3 = setTimeout(() => setStep(3), 10000);
+    return () => { clearTimeout(t2); clearTimeout(t3); };
+  }, [processing]);
 
   // Auto-load detail once summary is done
   useEffect(() => {
@@ -361,8 +368,8 @@ export default function AnalysisPage() {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-teal-800">{phase}</p>
-              <p className="text-xs text-teal-700/70">This usually takes a few seconds.</p>
+              <p className="text-sm font-semibold text-teal-800">Analysing your responses…</p>
+              <p className="text-xs text-teal-700/70">Step {step} of 4</p>
             </div>
           </div>
         )}
