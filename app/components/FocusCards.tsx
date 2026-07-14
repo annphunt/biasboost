@@ -27,7 +27,7 @@ export default function FocusCards({ selected, onSelect, disabled }: Props) {
               "text-left rounded-2xl border p-5 transition-all disabled:opacity-50 disabled:cursor-not-allowed",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2",
               isSel
-                ? "border-teal-500 bg-teal-50 ring-2 ring-teal-500/30"
+                ? "border-teal-500 bg-teal-50"
                 : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm cursor-pointer",
             ].join(" ")}
           >
