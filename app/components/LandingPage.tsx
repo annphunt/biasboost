@@ -53,8 +53,15 @@ export default function LandingPage() {
     <main className="min-h-screen flex flex-col bg-white">
       {/* Top bar */}
       <div className="border-b border-slate-200 bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center">
-          <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
+        <div className="max-w-6xl mx-auto px-4 py-2 flex items-center">
+          <Image
+            src="/logo-mark.png"
+            alt="BiasBoost"
+            width={44}
+            height={44}
+            priority
+            className="h-11 w-auto"
+          />
         </div>
       </div>
 

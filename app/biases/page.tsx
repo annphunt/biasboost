@@ -115,7 +115,7 @@ export default function DashboardPage() {
       <div className="border-b border-slate-200 bg-white sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
-            <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
+            <Image src="/logo-mark.png" alt="BiasBoost" width={32} height={32} className="h-8 w-auto" />
           </a>
           <div className="flex items-center gap-4">
             <a

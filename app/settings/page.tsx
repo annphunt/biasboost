@@ -64,7 +64,7 @@ export default function SettingsPage() {
               ← Back
             </button>
             <a href="/biases" className="flex items-center hover:opacity-70 transition-opacity">
-              <Image src="/logo.png" alt="BiasBoost" width={82} height={28} className="h-7 w-auto" />
+              <Image src="/logo-mark.png" alt="BiasBoost" width={32} height={32} className="h-8 w-auto" />
             </a>
           </div>
           <UserBadge />
