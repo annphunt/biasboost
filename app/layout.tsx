@@ -8,10 +8,26 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
+const SITE_TITLE = "BiasBoost | Think More Clearly. Make Better Decisions.";
+const SITE_DESCRIPTION =
+  "Sharpen your thinking through short, interactive Boosts that reveal your blind spots and improve your judgement over time.";
+
 export const metadata: Metadata = {
-  title: "BiasBoost — Decision Intelligence Assessment",
-  description:
-    "A structured reflection of how experienced professionals make decisions under uncertainty.",
+  metadataBase: new URL("https://biasboost.boostcamp.io"),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "https://biasboost.boostcamp.io",
+    siteName: "BiasBoost",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
