@@ -13,6 +13,9 @@ export default function LandingPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // Set to the email address once an account is awaiting email verification.
+  const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
+  const [resend, setResend] = useState<"idle" | "sending" | "sent">("idle");
   const router = useRouter();
 
   async function handleSubmit() {
@@ -27,10 +30,15 @@ export default function LandingPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });
-        if (!reg.ok) {
-          const data = await reg.json().catch(() => ({}));
-          throw new Error(data.detail ?? "Registration failed");
+        const regData = await reg.json().catch(() => ({}));
+        if (!reg.ok) throw new Error(regData.detail ?? "Registration failed");
+        if (regData.status === "pending_verification") {
+          setVerifyEmail(email);
+          setResend("idle");
+          setLoading(false);
+          return;
         }
+        // verification disabled → fall through and sign in automatically
       }
       const login = await fetch("/api/login", {
         method: "POST",
@@ -39,6 +47,12 @@ export default function LandingPage() {
       });
       if (!login.ok) {
         const data = await login.json().catch(() => ({}));
+        if (login.status === 403 && /verif/i.test(String(data.detail ?? ""))) {
+          setVerifyEmail(email);
+          setResend("idle");
+          setLoading(false);
+          return;
+        }
         throw new Error(data.detail ?? "Login failed");
       }
       // New accounts get the welcome intro; returning users go straight in.
@@ -47,6 +61,28 @@ export default function LandingPage() {
       setError(err instanceof Error ? err.message : String(err));
       setLoading(false);
     }
+  }
+
+  async function resendVerification() {
+    if (!verifyEmail) return;
+    setResend("sending");
+    try {
+      await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: verifyEmail }),
+      });
+    } catch {
+      /* the endpoint acknowledges regardless; nothing to surface */
+    }
+    setResend("sent");
+  }
+
+  function backToForm() {
+    setVerifyEmail(null);
+    setResend("idle");
+    setError(null);
+    setPassword("");
   }
 
   return (
@@ -78,6 +114,32 @@ export default function LandingPage() {
           </div>
 
           <div className="max-w-sm space-y-4">
+            {verifyEmail ? (
+              <div className="space-y-4 rounded-2xl border border-teal-200 bg-teal-50 p-6">
+                <div className="text-3xl leading-none">✉️</div>
+                <div className="space-y-1.5">
+                  <h2 className="text-lg font-semibold text-slate-800">Check your email</h2>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    We&apos;ve sent a verification link to{" "}
+                    <span className="font-medium text-slate-800">{verifyEmail}</span>. Click it
+                    to activate your account, then sign in.
+                  </p>
+                </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <button
+                    onClick={resendVerification}
+                    disabled={resend !== "idle"}
+                    className="font-medium text-teal-700 hover:text-teal-800 disabled:opacity-60 disabled:cursor-default"
+                  >
+                    {resend === "sending" ? "Sending…" : resend === "sent" ? "Email sent ✓" : "Resend email"}
+                  </button>
+                  <button onClick={backToForm} className="text-slate-500 hover:text-slate-700">
+                    Use a different email
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
             {/* Tabs */}
             <div className="flex rounded-xl border border-slate-200 overflow-hidden">
               <button
@@ -157,6 +219,8 @@ export default function LandingPage() {
                 Create a free account to save your progress, track your improvement and
                 personalise your learning.
               </p>
+            )}
+              </>
             )}
           </div>
         </div>

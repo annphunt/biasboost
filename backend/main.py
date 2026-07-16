@@ -31,6 +31,14 @@ SESSION_COOKIE = os.environ.get("BIASBOOST_SESSION_COOKIE", "bb_session")
 regstack_config = RegStackConfig.load()
 rs = RegStack(config=regstack_config)
 
+# Dev convenience: with the console email backend (no real emails sent), print the
+# verification link to the server log so the flow can be exercised locally. Never
+# runs in prod, where a real backend (e.g. SES) actually delivers the email.
+if regstack_config.email.backend == "console":
+    async def _log_verification_link(**kwargs: Any) -> None:
+        print(f"[verify-email] {kwargs.get('email')} -> {kwargs.get('url')}", flush=True)
+    rs.hooks.on("verification_requested", _log_verification_link)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
