@@ -80,6 +80,18 @@ def compute_level(score: int) -> str:
     return "High"
 
 
+def score_attempt(db: sqlite3.Connection, attempt_id: int) -> int:
+    """Total bias score for an attempt = sum of scoring[answer] over answered
+    questions. Deterministic from the answers (no AI). Uses the given connection."""
+    total = 0
+    for q in db.execute(
+        "SELECT answer_given, scoring FROM questions WHERE attempt_id = ?", (attempt_id,)
+    ):
+        if q["answer_given"]:
+            total += json.loads(q["scoring"]).get(q["answer_given"], 0)
+    return total
+
+
 VALID_ROLES = {"entrepreneur", "trader", "executive"}
 
 # All current roles are pinned static content (reviewed & committed). Any role
@@ -259,6 +271,7 @@ def get_my_biases(user_id: str = Depends(current_user_id)):
             "attemptId": row["id"],
             "completed": is_completed,
             "level": row["level"],
+            "score": row["total_score"],
             "answered": answered,
             # started but not finished (at least one answer, not all done)
             "inProgress": (not is_completed) and answered > 0,
@@ -275,6 +288,7 @@ def get_my_biases(user_id: str = Depends(current_user_id)):
             "answered": info["answered"] if info else 0,
             "attemptId": info["attemptId"] if info else None,
             "level": info["level"] if (info and info["completed"]) else None,
+            "score": info["score"] if (info and info["completed"]) else None,
         })
 
     return {"biases": biases}
@@ -461,9 +475,12 @@ def save_answer(attempt_id: int, body: dict[str, Any], user_id: str = Depends(cu
 
         all_answered = unanswered == 0
         if all_answered:
+            # Score + level are deterministic from the answers, so persist them the
+            # moment the Boost completes (independent of viewing the analysis).
+            total_score = score_attempt(db, attempt_id)
             db.execute(
-                "UPDATE bias_attempts SET completed_at = datetime('now') WHERE id = ?",
-                (attempt_id,),
+                "UPDATE bias_attempts SET completed_at = datetime('now'), total_score = ?, level = ? WHERE id = ?",
+                (total_score, compute_level(total_score), attempt_id),
             )
 
         db.commit()
@@ -491,23 +508,27 @@ async def get_analysis(attempt_id: int, user_id: str = Depends(current_user_id))
             (attempt_id,),
         ).fetchall()
 
-        total_score = 0
-        for q in questions:
-            if q["answer_given"]:
-                scoring = json.loads(q["scoring"])
-                total_score += scoring.get(q["answer_given"], 0)
-
-        level = compute_level(total_score)
+        # Prefer the stored score/level (persisted at completion); back-fill legacy rows.
+        total_score = attempt["total_score"]
+        if total_score is None:
+            total_score = sum(
+                json.loads(q["scoring"]).get(q["answer_given"], 0)
+                for q in questions if q["answer_given"]
+            )
+        level = attempt["level"] or compute_level(total_score)
+        if attempt["total_score"] is None or attempt["level"] is None:
+            db.execute(
+                "UPDATE bias_attempts SET total_score = ?, level = ? WHERE id = ?",
+                (total_score, level, attempt_id),
+            )
+            db.commit()
 
         if attempt["analysis_summary"]:
-            if not attempt["level"]:
-                db.execute("UPDATE bias_attempts SET level = ? WHERE id = ?", (level, attempt_id))
-                db.commit()
             return JSONResponse(
                 content={
                     "cached": True,
                     "totalScore": total_score,
-                    "level": attempt["level"] or level,
+                    "level": level,
                     "bias": attempt["bias"],
                     "definition": BIAS_DEFINITIONS.get(attempt["bias"], ""),
                     "summary": attempt["analysis_summary"],
@@ -549,8 +570,8 @@ async def get_analysis(attempt_id: int, user_id: str = Depends(current_user_id))
         db2 = get_db()
         try:
             db2.execute(
-                "UPDATE bias_attempts SET analysis_summary = ?, level = ? WHERE id = ?",
-                (full_text, level, attempt_id),
+                "UPDATE bias_attempts SET analysis_summary = ?, level = ?, total_score = ? WHERE id = ?",
+                (full_text, level, total_score, attempt_id),
             )
             db2.commit()
         finally:

@@ -56,6 +56,7 @@ def init_db() -> None:
                 completed_at     TEXT,
                 analysis         TEXT,
                 level            TEXT,
+                total_score      INTEGER,
                 analysis_summary TEXT,
                 UNIQUE(user_id, bias)
             );
@@ -73,6 +74,13 @@ def init_db() -> None:
                 UNIQUE(attempt_id, question_number)
             );
         """)
+
+        # Lightweight migrations for pre-existing DBs (CREATE IF NOT EXISTS won't
+        # add new columns to a table that already exists).
+        cols = {r["name"] for r in db.execute("PRAGMA table_info(bias_attempts)")}
+        if "total_score" not in cols:
+            db.execute("ALTER TABLE bias_attempts ADD COLUMN total_score INTEGER")
+
         db.commit()
     finally:
         db.close()

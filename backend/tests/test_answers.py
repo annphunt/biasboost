@@ -27,6 +27,13 @@ def test_save_answer_all_answered_marks_complete(client, db):
     r2 = client.get(f"/api/attempts/{attempt_id}")
     assert r2.json()["isComplete"] is True
 
+    # Score + level are persisted at completion (seed scoring: B = 1, so 4 × 1 = 4).
+    row = db.execute(
+        "SELECT total_score, level FROM bias_attempts WHERE id = ?", (attempt_id,)
+    ).fetchone()
+    assert row["total_score"] == 4
+    assert row["level"] == "Low"
+
 
 def test_save_answer_not_all_answered(client, db):
     attempt_id = _create_attempt(client, db)

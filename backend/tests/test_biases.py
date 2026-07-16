@@ -27,8 +27,8 @@ def test_get_biases_completed_shows_up(client, db):
     db.execute("INSERT INTO users (auth_user_id, role) VALUES (?, 'entrepreneur')", (TEST_UID,))
     # Manually insert a completed attempt for the authenticated user
     db.execute(
-        "INSERT INTO bias_attempts (user_id, bias, completed_at, level) VALUES (?, ?, datetime('now'), ?)",
-        (TEST_UID, "Confirmation Bias", "Low"),
+        "INSERT INTO bias_attempts (user_id, bias, completed_at, level, total_score) VALUES (?, ?, datetime('now'), ?, ?)",
+        (TEST_UID, "Confirmation Bias", "Low", 3),
     )
     db.commit()
 
@@ -39,6 +39,7 @@ def test_get_biases_completed_shows_up(client, db):
     assert cb["completed"] is True
     assert cb["inProgress"] is False
     assert cb["level"] == "Low"
+    assert cb["score"] == 3
     assert cb["attemptId"] is not None
 
 

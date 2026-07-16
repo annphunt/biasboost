@@ -35,13 +35,14 @@ def scan():
     roles = dict(app.execute("SELECT auth_user_id, role FROM users"))
 
     graded = defaultdict(lambda: {"red": [], "orange": [], "green": []})
-    for uid, bias, level in app.execute(
-        "SELECT user_id, bias, level FROM bias_attempts "
+    for uid, bias, level, score in app.execute(
+        "SELECT user_id, bias, level, total_score FROM bias_attempts "
         "WHERE completed_at IS NOT NULL AND level IS NOT NULL"
     ):
         colour = LEVEL_COLOUR.get(level)
         if colour:
-            graded[uid][colour].append(bias)
+            label = f"{bias} ({score})" if score is not None else bias
+            graded[uid][colour].append(label)
 
     rows = []
     for uid, email in users:
