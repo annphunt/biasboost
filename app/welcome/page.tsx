@@ -22,23 +22,23 @@ export default function WelcomePage() {
           </h1>
 
           <div className="space-y-5 text-slate-500 text-lg leading-relaxed">
-            <p>Every important decision begins with the same question:</p>
             <p className="text-xl sm:text-2xl font-medium text-slate-800">
-              Can I trust my own judgement?
+              You&apos;re about to discover how you make decisions—not how you
+              think you make decisions.
             </p>
             <p>
-              BiasBoost explores how you naturally evaluate evidence, handle
-              uncertainty and make decisions.
+              Over the next 30 minutes, you&apos;ll work through a series of
+              realistic scenarios based on your chosen role. Each completed Boost
+              reveals one of the hidden thinking patterns that can influence your
+              judgement.
             </p>
             <p>
-              Through realistic scenarios, you&apos;ll identify the hidden thinking
-              patterns that influence your judgement every day.
+              As you complete each Boost, you&apos;ll build your{" "}
+              <span className="font-medium text-slate-700">Personalized Bias Profile</span>,
+              helping you recognise where your thinking is strongest and where
+              hidden blind spots may exist.
             </p>
-            <p>
-              When you finish, you&apos;ll receive a personalised{" "}
-              <span className="font-medium text-slate-700">Bias Profile</span> and
-              practical ways to improve your decision-making.
-            </p>
+            <p>You can pause at any time and continue whenever you&apos;re ready.</p>
           </div>
 
           <div className="space-y-3 pt-2">
@@ -46,10 +46,10 @@ export default function WelcomePage() {
               onClick={() => router.push("/onboarding")}
               className="w-full sm:w-auto px-8 py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-sm tracking-wide transition-colors"
             >
-              Get started →
+              Begin My First Boost →
             </button>
             <p className="text-xs text-slate-400">
-              Takes about 30 minutes. Better on a laptop. Pause and return whenever you like.
+              Takes about 30 minutes. You can pause and continue anytime.
             </p>
           </div>
         </div>
