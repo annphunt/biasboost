@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import UserBadge from "../components/UserBadge";
+import ArchetypeComparison from "../components/ArchetypeComparison";
+import { FOUNDER_CATEGORY } from "../archetypes/founderArchetypes";
+import type { BiasScores } from "../archetypes/types";
 
 type Level = "Low" | "Medium" | "High";
 
@@ -17,6 +20,9 @@ const LEVEL_DOT: Record<Level, string> = {
   Medium: "bg-amber-500",
   High:   "bg-red-500",
 };
+// Defensive fallback only: completed Boosts persist a numeric score, but if one
+// is missing we approximate from the level's midpoint (scale is 0–12).
+const LEVEL_MIDPOINT: Record<Level, number> = { Low: 2, Medium: 6, High: 10 };
 
 const BIAS_ICON: Record<string, string> = {
   "Confirmation Bias":      "/icons/confirmation-bias.png",
@@ -42,6 +48,7 @@ interface BiasCard {
   answered: number;
   attemptId: number | null;
   level: Level | null;
+  score: number | null;
 }
 
 export default function DashboardPage() {
@@ -92,6 +99,10 @@ export default function DashboardPage() {
   const nextIndex = biases.findIndex((b) => !b.completed);
   const nextBias = nextIndex >= 0 ? biases[nextIndex] : null;
   const allComplete = loaded && biases.length > 0 && !nextBias;
+
+  const userScores: BiasScores = Object.fromEntries(
+    biases.map((b) => [b.name, b.score ?? LEVEL_MIDPOINT[b.level ?? "Medium"]]),
+  );
 
   const ctaLabel = allComplete
     ? "Review Your Results →"
@@ -230,6 +241,11 @@ export default function DashboardPage() {
             </div>
           )}
         </section>
+
+        {/* 6. Archetype comparison — only once every Founder Boost is complete */}
+        {allComplete && (
+          <ArchetypeComparison userScores={userScores} category={FOUNDER_CATEGORY} />
+        )}
       </div>
     </main>
   );

@@ -12,3 +12,4 @@ __pycache__/
 tsconfig.tsbuildinfo
 .claude/
 regstack.db
+.DS_Store

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "cd backend && python -m pytest tests/ -v",
-    "test:watch": "cd backend && python -m pytest tests/ -v --tb=short -p no:cacheprovider"
+    "test:watch": "cd backend && python -m pytest tests/ -v --tb=short -p no:cacheprovider",
+    "test:web": "vitest run",
+    "test:web:watch": "vitest"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
@@ -24,6 +26,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }
